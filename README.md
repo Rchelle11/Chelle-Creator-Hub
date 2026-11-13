@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ROCHELLE OS — Short Video Masterclass
 
-## Getting Started
+A mobile-first creator academy + community: courses with progress tracking, manual GCash/GoTyme/PayPal checkout with admin approval → automatic enrollment, the **Bottle** vertical video feed, challenges, leaderboard, community, announcements, notifications, messages and a full admin dashboard. Installable as a PWA.
 
-First, run the development server:
+**Stack:** Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · Supabase (Postgres, Auth, Storage, Realtime) · Lucide · Vercel
+
+## Quick start (local)
 
 ```bash
+npm install
+npx supabase start          # needs Docker; applies supabase/migrations + supabase/seed.sql
+cp .env.example .env.local  # paste the API URL + publishable/anon key printed by `supabase start`
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Demo accounts (password `Masterclass123!`):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Email | Role |
+|---|---|
+| admin@rochelle.studio | Admin |
+| demo@rochelle.studio | Enrolled student with progress |
+| new@rochelle.studio | Registered, payment pending |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Discount codes: `CREATOR20` (20% off), `EARLYBIRD` (10% off).
 
-## Learn More
+## Deploy (Supabase + Vercel)
 
-To learn more about Next.js, take a look at the following resources:
+1. Create a Supabase project. Run `npx supabase link` and then `npx supabase db push` to apply the migration. **Do not run `seed.sql` in production**, because it creates demo accounts.
+2. Create your admin: sign up in the app, then run in the SQL editor:
+   `update profiles set role = 'admin' where id = (select id from auth.users where email = 'you@example.com');`
+3. Supabase → Auth → URL configuration: set Site URL to your domain and add `https://yourdomain/**` to redirect URLs.
+4. Import the repo into Vercel and set the env vars from `.env.example`, including your GCash/GoTyme QR image URLs (`NEXT_PUBLIC_GCASH_QR_URL`, `NEXT_PUBLIC_GOTYME_QR_URL`) and account details.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Architecture
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+  app/
+    page.tsx                 public landing / sales page
+    (auth)/                  login, signup, forgot/reset password (server actions)
+    (studio)/                student app: dashboard, courses, lessons, checkout, payment-status,
+                             bottle, u/[id] profiles, challenges, community, messages,
+                             announcements, notifications, account, search
+    admin/                   overview + analytics, payments, students, courses, bottle
+                             moderation, challenges, announcements, messages, discounts
+  components/                ui/ (Modal, Toast, ProgressBar, Avatar, EmptyState…), nav/,
+                             course/, bottle/, challenges/, checkout/, community/, admin/
+  lib/
+    actions/                 server actions (student + admin, separated)
+    supabase/                browser/server clients + session proxy
+    course.ts                course outline, lock state and progress loader
+    upload.ts                direct-to-Storage uploads with progress, image compression, video posters
+  proxy.ts                   route protection + session refresh
+supabase/
+  migrations/                schema, RLS, storage policies, RPC business logic
+  seed.sql                   demo data
+```
 
-## Deploy on Vercel
+### Security model
+Security is enforced in Postgres, not only in the UI.
+- **RLS on every table.** Paid lesson content (`lesson_content`, `lesson_resources`) is readable only by enrolled students, admins, or for free-preview lessons. Lesson titles stay public so the outline can be shown.
+- **Course videos** live in the private `course-media` bucket. Pages request short-lived signed URLs, and the storage policy checks enrollment from the path (`{course_id}/…`).
+- **Receipts** live in the private `receipts` bucket (`{user_id}/…`). Only the owner and admins can read them.
+- **Prices are computed server-side** (`quote_price` / `submit_payment`). Clients cannot set amounts.
+- **Approval is one transaction** (`approve_payment`): it marks the payment approved, upserts the enrollment (which is the progress record), counts the discount use and notifies the student.
+- **Sequential unlocking** is enforced by `complete_lesson`, which refuses a lesson until the previous ones are done.
+- Students cannot change their own role or status, or feature or pin their own posts (trigger guards).
+- Emails are never exposed in `profiles`. Admins read them through `admin_*` security-definer RPCs.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Notifications
+Database triggers create notifications for payment approval or rejection, new lessons, announcements, comments, replies, likes, featured videos, challenge completion, course milestones and messages. The bell updates live through Supabase Realtime.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Leaderboard
+`weekly_leaderboard()` scores the current week with several signals: challenge entry 10, video 5, comment 2, like 1, featured 25.
+
+## Production notes / next steps
+- **Video:** Bottle uploads go straight to Storage with a progress bar, a generated poster frame and lazy loading (`preload="none"` until near the viewport). At scale, put Bottle and course video on a streaming provider (Mux, Cloudflare Stream or Bunny) for HLS and server-side transcoding. Lessons already accept an external `video_url`.
+- **Email:** wire Supabase Auth SMTP and a provider (e.g. Resend) to the `notifications` table for email delivery.
+- **Built to extend:** certificates (the completion page has an achievement card ready), payment gateway (swap `submit_payment` for a webhook that calls the same enrollment logic), multiple courses and tiers (schema already supports them), AI tools, and affiliates.
