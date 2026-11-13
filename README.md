@@ -29,7 +29,13 @@ Discount codes: `CREATOR20` (20% off), `EARLYBIRD` (10% off).
 2. Create your admin: sign up in the app, then run in the SQL editor:
    `update profiles set role = 'admin' where id = (select id from auth.users where email = 'you@example.com');`
 3. Supabase → Auth → URL configuration: set Site URL to your domain and add `https://yourdomain/**` to redirect URLs.
-4. Import the repo into Vercel and set the env vars from `.env.example`, including your GCash/GoTyme QR image URLs (`NEXT_PUBLIC_GCASH_QR_URL`, `NEXT_PUBLIC_GOTYME_QR_URL`) and account details.
+4. Import the repo into Vercel. Under **Settings → Environment Variables**, add these (required, or every page that uses the database will fail):
+   - `NEXT_PUBLIC_SUPABASE_URL`: e.g. `https://<project-ref>.supabase.co`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` (or `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`): the anon / `sb_publishable_…` key. Never the secret key.
+
+   Optional: GCash/GoTyme details and QR image URLs (`NEXT_PUBLIC_GCASH_QR_URL`, `NEXT_PUBLIC_GOTYME_QR_URL`). See `.env.example` for the full list.
+
+   `NEXT_PUBLIC_*` values are baked in at build time, so **redeploy after changing them**.
 
 ## Architecture
 
