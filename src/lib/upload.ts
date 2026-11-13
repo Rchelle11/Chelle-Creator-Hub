@@ -1,6 +1,6 @@
 "use client";
 import { createClient } from "./supabase/client";
-import { SUPABASE_URL } from "./supabase/env";
+import { browserSupabaseUrl } from "./supabase/env";
 
 export type Bucket = "receipts" | "bottle" | "avatars" | "course-media" | "public-assets";
 
@@ -14,7 +14,7 @@ export async function uploadFile(
 
   await new Promise<void>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", `${SUPABASE_URL}/storage/v1/object/${bucket}/${path.split("/").map(encodeURIComponent).join("/")}`);
+    xhr.open("POST", `${browserSupabaseUrl()}/storage/v1/object/${bucket}/${path.split("/").map(encodeURIComponent).join("/")}`);
     xhr.setRequestHeader("Authorization", `Bearer ${session.access_token}`);
     xhr.setRequestHeader("x-upsert", "false");
     xhr.setRequestHeader("cache-control", "max-age=31536000");

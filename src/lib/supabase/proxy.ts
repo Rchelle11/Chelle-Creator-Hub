@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { SUPABASE_KEY, SUPABASE_URL, isConfigured } from "./env";
+import { COOKIE_OPTIONS, SUPABASE_KEY, SUPABASE_URL, isConfigured } from "./env";
 
 const PROTECTED = ["/dashboard", "/courses", "/checkout", "/payment-status", "/bottle", "/u/", "/challenges",
   "/community", "/messages", "/announcements", "/notifications", "/account", "/search", "/admin"];
@@ -11,6 +11,7 @@ export async function updateSession(request: NextRequest) {
   if (!isConfigured) return response;
 
   const supabase = createServerClient(SUPABASE_URL, SUPABASE_KEY, {
+    cookieOptions: COOKIE_OPTIONS,
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll: (toSet) => {
