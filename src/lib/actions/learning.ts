@@ -23,3 +23,12 @@ export async function saveNotes(lessonId: string, content: string): Promise<Acti
     .upsert({ user_id: user.id, lesson_id: lessonId, content: content.slice(0, 20000), updated_at: new Date().toISOString() });
   return error ? fail(error) : { ok: true };
 }
+
+export async function enrollFree(courseId: string): Promise<ActionResult> {
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("enroll_free", { p_course_id: courseId });
+  if (error) return fail(error);
+  revalidatePath("/courses", "layout");
+  revalidatePath("/dashboard");
+  return { ok: true };
+}

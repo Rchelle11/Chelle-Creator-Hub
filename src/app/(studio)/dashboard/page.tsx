@@ -22,7 +22,7 @@ export default async function Dashboard() {
   const current = enrollments?.[0] as { course: { slug: string; title: string } } | undefined;
   const data = current ? await loadCourse(supabase, current.course.slug, user.id) : null;
   const firstName = profile.full_name.split(" ")[0];
-  const justApproved = lastPayment?.status === "approved" && data && data.completedCount === 0;
+  const justApproved = lastPayment?.status === "approved" && data && data.completedCount === 0 && Number(data.course.price) > 0;
 
   return (
     <div className="space-y-6 md:space-y-8">

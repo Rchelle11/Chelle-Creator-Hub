@@ -8,6 +8,7 @@ import { ProgressBar } from "@/components/ui/ProgressBar";
 import { CompleteButton, LessonNotes, LessonResources } from "@/components/course/LessonClient";
 import type { LessonResource } from "@/lib/types";
 import { lessonCode } from "@/lib/utils";
+import { EnrollFreeButton } from "@/components/course/EnrollFreeButton";
 
 export default async function LessonPage({ params }: { params: Promise<{ slug: string; lessonId: string }> }) {
   const { slug, lessonId } = await params;
@@ -63,7 +64,9 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
         <div className="mt-6">
           {data.enrolled
             ? <CompleteButton lessonId={lessonId} slug={slug} completed={lesson.state === "completed"} nextId={next?.id ?? null} />
-            : <Link href={`/checkout/${slug}`} className="btn-primary h-13 w-full">Unlock the full masterclass</Link>}
+            : Number(data.course.price) === 0
+              ? <EnrollFreeButton courseId={data.course.id} href={`/courses/${slug}/${lessonId}`} className="h-13 w-full" />
+              : <Link href={`/checkout/${slug}`} className="btn-primary h-13 w-full">Unlock the full masterclass</Link>}
         </div>
 
         <section className="mt-8">

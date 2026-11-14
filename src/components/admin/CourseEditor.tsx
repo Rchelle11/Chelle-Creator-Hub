@@ -51,7 +51,7 @@ export function CourseEditor({ course, modules, lessons }: { course: CourseInput
         <div><label className="label">Slug</label><input name="slug" defaultValue={course.slug} required className="input" /></div>
         <div className="md:col-span-2"><label className="label">Subtitle</label><input name="subtitle" defaultValue={course.subtitle} className="input" /></div>
         <div className="md:col-span-2"><label className="label">Description</label><textarea name="description" defaultValue={course.description} rows={3} className="input" /></div>
-        <div><label className="label">Price (₱)</label><input name="price" type="number" step="0.01" defaultValue={course.price} className="input" /></div>
+        <div><label className="label">Price (₱) — set 0 for a FREE course</label><input name="price" type="number" step="0.01" defaultValue={course.price} className="input" /></div>
         <div><label className="label">Thumbnail URL</label><input name="thumbnail_url" defaultValue={course.thumbnail_url ?? ""} className="input" /></div>
         <div><label className="label">Instructor</label><input name="instructor_name" defaultValue={course.instructor_name} className="input" /></div>
         <div><label className="label">Instructor bio</label><input name="instructor_bio" defaultValue={course.instructor_bio} className="input" /></div>
