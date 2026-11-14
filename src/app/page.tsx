@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { About, Community, JoinSteps, Process, Toolkit } from "@/components/landing/Sections";
 import { createClient } from "@/lib/supabase/server";
 import { isConfigured } from "@/lib/supabase/env";
 import { peso } from "@/lib/utils";
@@ -46,21 +47,23 @@ const CONTACT = {
 };
 
 async function getData() {
-  if (!isConfigured) return { price: 5499, modules: FALLBACK_MODULES, posts: [] as Showcase[], signedIn: false, free: [] as FreeCourse[] };
+  if (!isConfigured) return { price: 5499, modules: FALLBACK_MODULES, posts: [] as Showcase[], signedIn: false, free: [] as CourseItem[], courses: [] as CourseItem[], instructor: { name: "Chelle", bio: "" } };
   const supabase = await createClient();
   const [{ data: course }, { data: auth }] = await Promise.all([
     supabase.from("courses").select("id, price").eq("slug", SLUG).maybeSingle(),
     supabase.auth.getUser(),
   ]);
-  const [{ data: free }, { data: freeLessons }] = await Promise.all([
-    supabase.from("courses").select("id, slug, title, description, thumbnail_url").eq("published", true).eq("price", 0).order("created_at").limit(3),
+  const [{ data: allCourses }, { data: allLessons }, { data: main }] = await Promise.all([
+    supabase.from("courses").select("id, slug, title, description, thumbnail_url, price").eq("published", true).order("price", { ascending: false }).order("created_at").limit(9),
     supabase.from("lessons").select("course_id").eq("published", true),
+    supabase.from("courses").select("instructor_name, instructor_bio").eq("slug", SLUG).maybeSingle(),
   ]);
+  const courses = (allCourses ?? []).map((c) => ({ ...c, price: Number(c.price), lessons: (allLessons ?? []).filter((l) => l.course_id === c.id).length })) as CourseItem[];
   const [{ data: modules }, { data: lessons }, { data: posts }] = await Promise.all([
     supabase.from("modules").select("id, title, position").eq("course_id", course?.id ?? "").order("position"),
     supabase.from("lessons").select("module_id").eq("course_id", course?.id ?? ""),
     supabase.from("posts").select("id, video_url, poster_url, caption, like_count, author:profiles!posts_user_id_fkey(full_name)")
-      .eq("featured", true).eq("status", "published").order("created_at", { ascending: false }).limit(4),
+      .eq("featured", true).eq("status", "published").order("like_count", { ascending: false }).limit(4),
   ]);
   return {
     price: Number(course?.price ?? 5499),
@@ -69,15 +72,18 @@ async function getData() {
       : FALLBACK_MODULES,
     posts: (posts ?? []) as unknown as Showcase[],
     signedIn: !!auth.user,
-    free: (free ?? []).map((c) => ({ ...c, lessons: (freeLessons ?? []).filter((l) => l.course_id === c.id).length })) as FreeCourse[],
+    free: courses.filter((c) => c.price === 0),
+    courses,
+    instructor: { name: main?.instructor_name || "Chelle", bio: main?.instructor_bio ?? "" },
   };
 }
-type FreeCourse = { id: string; slug: string; title: string; description: string; thumbnail_url: string | null; lessons: number };
+type CourseItem = { id: string; slug: string; title: string; description: string; thumbnail_url: string | null; lessons: number; price: number };
 type Showcase = { id: string; video_url: string; poster_url: string | null; caption: string; like_count: number; author: { full_name: string } | null };
 
 export default async function Landing() {
-  const { price, modules, posts, signedIn, free } = await getData();
+  const { price, modules, posts, signedIn, free, courses, instructor } = await getData();
   const freeHref = (slug: string) => (signedIn ? `/courses/${slug}` : `/signup?next=${encodeURIComponent(`/courses/${slug}`)}`);
+  const courseHref = (c: CourseItem) => (c.price === 0 ? freeHref(c.slug) : signedIn ? `/courses/${c.slug}` : `/signup?next=${encodeURIComponent(`/checkout/${c.slug}`)}`);
   const totalLessons = modules.reduce((a, m) => a + m.count, 0);
 
   return (
@@ -160,28 +166,32 @@ export default async function Landing() {
         </div>
       </section>
 
-      {/* Free tutorials */}
-      {free.length > 0 && (
-        <section id="free" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 md:px-6">
-          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-ok">Free tutorials</p>
-          <h2 className="h-display max-w-2xl text-4xl md:text-5xl">Start learning for <em className="text-ok">free</em>.</h2>
-          <p className="mt-3 max-w-xl text-soft">Create a free account and watch these lessons right away. No payment needed.</p>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {free.map((c) => (
-              <Link key={c.id} href={freeHref(c.slug)} className="glass glass-hover group overflow-hidden">
-                <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-ok/30 to-ink-3">
+      <Process />
+      <Toolkit />
+
+      {/* Courses (paid + free) */}
+      {courses.length > 0 && (
+        <section id="courses" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 md:px-6">
+          <span id="free" className="block scroll-mt-24" />
+          <p className="eyebrow mb-3">Courses</p>
+          <h2 className="text-4xl font-extrabold tracking-tight md:text-5xl">Learn how to make it.<br /><span className="text-accent">{free.length > 0 ? "Start for free." : "Then publish it."}</span></h2>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {courses.map((c) => (
+              <Link key={c.id} href={courseHref(c)} className="glass glass-hover group flex flex-col overflow-hidden">
+                <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-accent/40 to-ink-3">
                   {c.thumbnail_url && (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={c.thumbnail_url} alt="" className="size-full object-cover transition duration-700 group-hover:scale-105" />
                   )}
-                  <span className="absolute left-3 top-3 rounded-lg bg-ok px-3 py-1 text-sm font-black tracking-widest text-black/85 shadow-lg">FREE</span>
+                  <span className="absolute left-3 top-3 rounded-md bg-black/60 px-2 py-1 text-[11px] font-semibold text-pure backdrop-blur">{c.lessons} lessons</span>
+                  {c.price === 0 && <span className="absolute right-3 top-3 rounded-lg bg-ok px-3 py-1 text-sm font-black tracking-widest text-black/85 shadow-lg">FREE</span>}
                 </div>
-                <div className="p-5">
-                  <h3 className="text-lg font-semibold">{c.title}</h3>
-                  <p className="mt-1 line-clamp-2 text-sm text-mute">{c.description}</p>
-                  <p className="mt-4 flex items-center justify-between text-sm">
-                    <span className="flex items-center gap-2 text-xs text-mute"><Play className="size-3.5" /> {c.lessons} free lessons</span>
-                    <span className="font-semibold text-ok">Watch free →</span>
+                <div className="flex flex-1 flex-col p-5">
+                  <h3 className="text-lg font-semibold leading-snug">{c.title}</h3>
+                  <p className="mt-1.5 line-clamp-2 text-sm text-mute">{c.description}</p>
+                  <p className="mt-auto flex items-center justify-between pt-5">
+                    <span className={`h-display text-2xl ${c.price === 0 ? "text-ok" : ""}`}>{c.price === 0 ? "Free" : peso(c.price)}</span>
+                    <span className="btn-ghost btn-sm">{c.price === 0 ? "Watch free" : "View course"} <ArrowRight className="size-3.5" /></span>
                   </p>
                 </div>
               </Link>
@@ -229,24 +239,46 @@ export default async function Landing() {
         </div>
       </section>
 
-      {/* Student work */}
+      {/* Watch the work */}
       {posts.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 py-16 md:px-6">
-          <p className="eyebrow mb-3">Student work · from Battles</p>
-          <h2 className="h-display text-4xl md:text-5xl">Made by students like you.</h2>
-          <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
-            {posts.map((p) => (
-              <div key={p.id} className="relative aspect-[9/16] overflow-hidden rounded-2xl border border-line bg-black text-pure">
-                <video src={p.video_url} poster={p.poster_url ?? undefined} muted loop playsInline autoPlay preload="metadata" className="size-full object-cover" />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-3 pt-12">
-                  <p className="text-xs font-semibold">{p.author?.full_name}</p>
-                  <p className="mt-0.5 line-clamp-2 text-[11px] text-pure/80">{p.caption}</p>
-                </div>
+        <section id="work" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 md:px-6">
+          <p className="eyebrow mb-3">Featured in Battles</p>
+          <h2 className="max-w-2xl text-4xl font-extrabold tracking-tight md:text-5xl">Watch the work. <span className="text-mute">Then learn how it was made.</span></h2>
+          <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+            <div className="relative mx-auto aspect-[9/16] w-full max-w-sm overflow-hidden rounded-3xl border border-line bg-black text-pure">
+              <video src={posts[0].video_url} poster={posts[0].poster_url ?? undefined} muted loop playsInline autoPlay preload="metadata" className="size-full object-cover" />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-5 pt-20">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-pure/70">Top pick</p>
+                <p className="mt-1 text-lg font-semibold">{posts[0].author?.full_name}</p>
+                <p className="mt-1 line-clamp-2 text-sm text-pure/80">{posts[0].caption}</p>
               </div>
-            ))}
+            </div>
+            <div>
+              <p className="mb-4 text-sm font-semibold">Top featured</p>
+              <ol className="space-y-3">
+                {posts.map((p, i) => (
+                  <li key={p.id} className="glass flex items-center gap-4 p-3">
+                    <span className="h-display w-10 text-center text-4xl text-mute">{i + 1}</span>
+                    <div className="relative aspect-[9/16] w-14 shrink-0 overflow-hidden rounded-lg bg-black">
+                      <video src={p.video_url} poster={p.poster_url ?? undefined} muted playsInline preload="metadata" className="size-full object-cover" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-semibold">{p.author?.full_name}</p>
+                      <p className="line-clamp-1 text-sm text-mute">{p.caption}</p>
+                    </div>
+                    <span className="flex items-center gap-1 text-sm text-mute"><Heart className="size-4 fill-accent-2 text-accent-2" />{p.like_count}</span>
+                  </li>
+                ))}
+              </ol>
+              <Link href={signedIn ? "/battles" : "/signup?next=%2Fbattles"} className="btn-primary mt-6">Create a free account to watch <ArrowRight className="size-4" /></Link>
+            </div>
           </div>
         </section>
       )}
+
+      <JoinSteps />
+      <About name={instructor.name} bio={instructor.bio} />
+      <Community signedIn={signedIn} />
 
       {/* Pricing / CTA */}
       <section className="mx-auto max-w-6xl px-4 py-20 md:px-6">
@@ -299,10 +331,11 @@ export default async function Landing() {
           <nav aria-label="Explore">
             <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.3em] text-mute">Explore</p>
             <ul className="space-y-2.5 text-sm text-soft">
-              <li><a href="#curriculum" className="hover:text-white">Courses</a></li>
+              <li><a href="#courses" className="hover:text-white">Courses</a></li>
               <li><a href="#learn" className="hover:text-white">What you&apos;ll learn</a></li>
               {free.length > 0 && <li><a href="#free" className="hover:text-white">Free tutorials</a></li>}
-              <li><a href="#faq" className="hover:text-white">How to join</a></li>
+              <li><a href="#join" className="hover:text-white">How to join</a></li>
+              <li><a href="#faq" className="hover:text-white">FAQ</a></li>
               <li><Link href="/courses" className="hover:text-white">My courses</Link></li>
             </ul>
           </nav>
