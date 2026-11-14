@@ -23,7 +23,7 @@ export default async function CompletePage({ params }: { params: Promise<{ slug:
       {/* Achievement card — certificate generation can plug in here later. */}
       <div className="glass relative mt-10 overflow-hidden p-8 text-left">
         <div className="absolute -right-10 -top-10 size-48 rounded-full bg-accent/20 blur-3xl" />
-        <p className="text-[10px] font-bold tracking-[0.3em] text-mute">ROCHELLE OS · ACHIEVEMENT</p>
+        <p className="text-[10px] font-bold tracking-[0.3em] text-mute">CHELLE CREATOR HUB · ACHIEVEMENT</p>
         <p className="h-display mt-6 text-4xl">{profile.full_name}</p>
         <p className="mt-2 text-sm text-soft">has completed all {data.total} lessons of the</p>
         <p className="mt-1 text-lg font-semibold">{data.course.title}</p>

@@ -7,7 +7,7 @@ export default async function SignupPage({ searchParams }: { searchParams: Promi
   const { next } = await searchParams;
   return (
     <>
-      <p className="eyebrow mb-3">Join ROCHELLE OS</p>
+      <p className="eyebrow mb-3">Join CHELLE CREATOR HUB</p>
       <h1 className="h-display mb-8 text-5xl">Your creator studio awaits.</h1>
       <AuthForm action={signup} next={next} submit="Create Account" pending="Creating your studio…"
         fields={[

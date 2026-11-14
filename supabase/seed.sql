@@ -37,7 +37,7 @@ begin
   end loop;
 end $$;
 
-update public.profiles set role = 'admin', bio = 'Creator, editor and your instructor. Building ROCHELLE OS for the next wave of short-form storytellers.'
+update public.profiles set role = 'admin', bio = 'Creator, editor and your instructor. Building Chelle Creator Hub for the next wave of short-form storytellers.'
  where id = '00000000-0000-4000-a000-000000000001';
 update public.profiles set bio = 'Learning to turn ideas into scroll-stopping edits.' where id = '00000000-0000-4000-a000-000000000002';
 update public.profiles set bio = 'UGC creator · CapCut addict · Manila' where id = '00000000-0000-4000-a000-000000000003';

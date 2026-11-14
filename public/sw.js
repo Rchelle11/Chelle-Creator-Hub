@@ -1,6 +1,6 @@
-// ROCHELLE OS service worker: app-shell caching + offline fallback.
+// Chelle Creator Hub service worker: app-shell caching + offline fallback.
 // Never caches API calls, auth, or private video/receipt URLs.
-const CACHE = "ros-v2";
+const CACHE = "ros-v3";
 const OFFLINE = "/offline";
 
 self.addEventListener("install", (e) => {

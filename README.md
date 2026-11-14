@@ -1,4 +1,4 @@
-# ROCHELLE OS — Short Video Masterclass
+# Chelle Creator Hub — Short Video Masterclass
 
 A mobile-first creator academy + community: courses with progress tracking, manual GCash/GoTyme/PayPal checkout with admin approval → automatic enrollment, the **Battles** vertical video feed, challenges, leaderboard, community, announcements, notifications, messages and a full admin dashboard. Installable as a PWA.
 

@@ -1,5 +1,5 @@
 -- =====================================================================
--- ROCHELLE OS — starter content for a LIVE project
+-- Chelle Creator Hub — starter content for a LIVE project
 -- Run AFTER the setup SQL. Adds the Short Video Masterclass course
 -- (5 modules, 16 lessons), resources, 2 challenges, discount codes and a
 -- welcome announcement. Creates NO user accounts. Safe to run once.
@@ -85,4 +85,4 @@ insert into public.challenges (id, title, description, instructions, cover_url, 
 
 
 insert into public.announcements (title, content) values
- ('Welcome to ROCHELLE OS 🎬', 'The Short Video Masterclass is live. Start with Module 1 and post your first video in Bottle!');
+ ('Welcome to Chelle Creator Hub 🎬', 'The Short Video Masterclass is live. Start with Module 1 and post your first video in Bottle!');

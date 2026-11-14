@@ -6,7 +6,7 @@ import { AdminMobileNav } from "@/components/admin/AdminMobileNav";
 import { Logo } from "@/components/ui/Logo";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
-export const metadata = { title: { default: "Admin", template: "%s · Admin · ROCHELLE OS" } };
+export const metadata = { title: { default: "Admin", template: "%s · Admin · Chelle Creator Hub" } };
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const { supabase, user, profile } = await requireAdmin();

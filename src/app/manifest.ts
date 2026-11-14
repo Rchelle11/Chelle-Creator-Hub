@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "ROCHELLE OS — Short Video Masterclass",
-    short_name: "ROCHELLE OS",
+    name: "Chelle Creator Hub — Short Video Masterclass",
+    short_name: "Chelle Hub",
     description: "Learn. Create. Edit. Publish. Your private creator studio.",
     start_url: "/dashboard",
     scope: "/",

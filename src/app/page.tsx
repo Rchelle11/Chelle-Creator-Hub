@@ -74,8 +74,8 @@ export default async function Landing() {
             ) : (
               <>
                 {free.length > 0 && <a href="#free" className="btn-quiet btn-sm hidden sm:inline-flex"><span className="rounded bg-ok px-1.5 py-0.5 text-[10px] font-black tracking-wider text-black/85">FREE</span> Tutorials</a>}
-                <Link href="/login" className="btn-quiet btn-sm">Login</Link>
-                <Link href="/signup" className="btn-primary btn-sm">Start Learning</Link>
+                <Link href="/login" className="btn-quiet btn-sm px-2 sm:px-3.5">Login</Link>
+                <Link href="/signup" className="btn-primary btn-sm"><span className="sm:hidden">Join</span><span className="hidden sm:inline">Start Learning</span></Link>
               </>
             )}
           </div>
@@ -245,7 +245,7 @@ export default async function Landing() {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-10 text-sm text-mute md:flex-row md:px-6">
           <Logo />
           <p>Learn. Create. Edit. Publish.</p>
-          <p>© {new Date().getFullYear()} ROCHELLE OS</p>
+          <p>© {new Date().getFullYear()} CHELLE CREATOR HUB</p>
         </div>
       </footer>
     </div>

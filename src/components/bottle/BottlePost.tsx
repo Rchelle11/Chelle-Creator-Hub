@@ -38,7 +38,7 @@ export function BottlePost({ post, userId, isAdmin, canInteract, onDeleted }: {
   }
   async function share() {
     const url = `${location.origin}/battles/${post.id}`;
-    if (navigator.share) { try { await navigator.share({ title: "ROCHELLE OS · Battles", text: post.caption, url }); } catch {} }
+    if (navigator.share) { try { await navigator.share({ title: "Chelle Creator Hub · Battles", text: post.caption, url }); } catch {} }
     else { await navigator.clipboard.writeText(url); toast("Link copied."); }
   }
   async function remove() {
