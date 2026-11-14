@@ -25,7 +25,8 @@ Discount codes: `CREATOR20` (20% off), `EARLYBIRD` (10% off).
 
 ## Deploy (Supabase + Vercel)
 
-1. Create a Supabase project. Run `npx supabase link` and then `npx supabase db push` to apply the migration. **Do not run `seed.sql` in production**, because it creates demo accounts.
+1. Create a Supabase project. **Easiest:** paste `supabase/ALL-IN-ONE-SETUP.sql` into the SQL Editor and run it once. It covers steps 1–3 below (and makes the first registered account admin). Otherwise:
+   Create a Supabase project. Run `npx supabase link` and then `npx supabase db push` to apply the migration. **Do not run `seed.sql` in production**, because it creates demo accounts.
 2. Optional: run `supabase/starter-content.sql` in the SQL editor to load the course, lessons and challenges (no fake users).
 3. Create your admin: sign up in the app, then run `supabase/make-admin.sql` with your email, or:
    `update profiles set role = 'admin' where id = (select id from auth.users where email = 'you@example.com');`
