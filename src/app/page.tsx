@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {
-  ArrowRight, Sparkles, Zap, BookOpen, Wand2, Scissors, Captions, Volume2, Shuffle, Eye, CalendarRange, Send, Wallet,
+  ArrowRight, Plus, Sparkles, Zap, BookOpen, Wand2, Scissors, Captions, Volume2, Shuffle, Eye, CalendarRange, Send, Wallet,
   Check, Play, Heart, Users, Briefcase, Smartphone, Building2, Film, Bot, GraduationCap,
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
@@ -25,6 +25,25 @@ const FALLBACK_MODULES = [
   { title: "AI Video Creation", count: 3 }, { title: "Editing That Feels Premium", count: 4 }, { title: "Publish, Grow & Monetize", count: 2 },
 ];
 const SLUG = "short-video-masterclass";
+
+const FAQ = [
+  { q: "How do I pay?", a: "Pay with GCash, GoTyme, or PayPal if you're outside the Philippines. The checkout page shows the QR code and the exact amount. After paying, upload a screenshot of your receipt with the reference number." },
+  { q: "How long until my course unlocks?", a: "We check every payment by hand, so it usually takes a few hours. You'll get a notification in the app as soon as it's confirmed, and the course opens right away." },
+  { q: "Is there anything I can watch for free?", a: "Yes. Create a free account to watch the free tutorials and the preview lessons before you decide to join the masterclass." },
+  { q: "Do I need experience or expensive gear?", a: "No. The lessons start from zero, and a phone is enough. A laptop helps with longer edits, but it isn't required." },
+  { q: "Which tools will I use?", a: "CapCut for editing, plus the AI video tools covered in the AI module. Each lesson tells you what you need, and you can begin with free versions where they're available." },
+  { q: "I don't make AI videos. Is this still for me?", a: "Yes. Hooks, storytelling, pacing, captions and sound apply to every short video. The AI lessons are one module you can use whenever you're ready." },
+  { q: "Do I keep access?", a: "Yes. It's a one-time payment, and you keep access to the lessons and the creator community." },
+  { q: "What is Battles?", a: "Battles is the student feed. Post your edits, join challenges, and get feedback from other creators." },
+];
+
+// Optional public contact links, set in the environment (Vercel → Settings → Environment Variables).
+const CONTACT = {
+  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL,
+  facebook: process.env.NEXT_PUBLIC_FACEBOOK_URL,
+  tiktok: process.env.NEXT_PUBLIC_TIKTOK_URL,
+  instagram: process.env.NEXT_PUBLIC_INSTAGRAM_URL,
+};
 
 async function getData() {
   if (!isConfigured) return { price: 5499, modules: FALLBACK_MODULES, posts: [] as Showcase[], signedIn: false, free: [] as FreeCourse[] };
@@ -128,7 +147,7 @@ export default async function Landing() {
       </section>
 
       {/* What you'll learn */}
-      <section className="mx-auto max-w-6xl px-4 py-16 md:px-6">
+      <section id="learn" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 md:px-6">
         <p className="eyebrow mb-3">What you&apos;ll learn</p>
         <h2 className="h-display max-w-2xl text-4xl md:text-5xl">Everything between an idea and a finished edit.</h2>
         <div className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -241,11 +260,66 @@ export default async function Landing() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section id="faq" className="mx-auto max-w-3xl scroll-mt-20 px-4 py-16 md:px-6">
+        <p className="eyebrow mb-3 text-center">Questions</p>
+        <h2 className="h-display mb-8 text-center text-4xl md:text-5xl">Before you join</h2>
+        <div className="space-y-3">
+          {FAQ.map((f, i) => (
+            <details key={f.q} open={i === 0} className="glass group overflow-hidden [&_summary::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-[15px] font-semibold md:px-6 md:py-5">
+                {f.q}
+                <Plus className="size-4 shrink-0 text-mute transition-transform duration-200 group-open:rotate-45" />
+              </summary>
+              <p className="px-5 pb-5 text-sm leading-relaxed text-soft md:px-6">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {/* Closing call to action */}
+      <section className="relative overflow-hidden px-4 py-24 text-center md:py-36">
+        <div className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-[min(900px,120vw)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/25 blur-[100px]" />
+        <h2 className="relative text-[17vw] font-black leading-[0.9] tracking-tighter md:text-[150px]">Let&apos;s create.</h2>
+        <p className="relative mt-8 text-[11px] font-semibold uppercase tracking-[0.3em] text-mute">
+          {free.length > 0 ? "Free tutorials inside · " : ""}Pay once · Learn at your pace
+        </p>
+        <div className="relative mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+          <Link href={signedIn ? "/courses" : "/signup?next=%2Fcourses"} className="btn-primary h-13 px-8 text-[15px]">Browse courses <ArrowRight className="size-4" /></Link>
+          {!signedIn && <Link href="/signup" className="btn-ghost h-13 px-8 text-[15px]">Create account</Link>}
+        </div>
+      </section>
+
       <footer className="border-t border-line">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-10 text-sm text-mute md:flex-row md:px-6">
-          <Logo />
-          <p>Learn. Create. Edit. Publish.</p>
-          <p>© {new Date().getFullYear()} CHELLE CREATOR HUB</p>
+        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-[1.4fr_1fr_1fr] md:px-6">
+          <div>
+            <Logo />
+            <p className="h-display mt-5 max-w-xs text-xl italic text-soft">Learn it. Create it. Edit it. Publish it.</p>
+          </div>
+          <nav aria-label="Explore">
+            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.3em] text-mute">Explore</p>
+            <ul className="space-y-2.5 text-sm text-soft">
+              <li><a href="#curriculum" className="hover:text-white">Courses</a></li>
+              <li><a href="#learn" className="hover:text-white">What you&apos;ll learn</a></li>
+              {free.length > 0 && <li><a href="#free" className="hover:text-white">Free tutorials</a></li>}
+              <li><a href="#faq" className="hover:text-white">How to join</a></li>
+              <li><Link href="/courses" className="hover:text-white">My courses</Link></li>
+            </ul>
+          </nav>
+          <div>
+            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.3em] text-mute">Contact</p>
+            <ul className="space-y-2.5 text-sm text-soft">
+              {CONTACT.email && <li><a href={`mailto:${CONTACT.email}`} className="hover:text-white">{CONTACT.email}</a></li>}
+              {CONTACT.facebook && <li><a href={CONTACT.facebook} target="_blank" rel="noreferrer" className="hover:text-white">Facebook</a></li>}
+              {CONTACT.tiktok && <li><a href={CONTACT.tiktok} target="_blank" rel="noreferrer" className="hover:text-white">TikTok</a></li>}
+              {CONTACT.instagram && <li><a href={CONTACT.instagram} target="_blank" rel="noreferrer" className="hover:text-white">Instagram</a></li>}
+              <li><Link href="/messages" className="hover:text-white">Message us in the app</Link></li>
+            </ul>
+          </div>
+        </div>
+        <div className="mx-auto flex max-w-6xl flex-col justify-between gap-2 px-4 pb-10 text-xs text-mute sm:flex-row md:px-6">
+          <p>© {new Date().getFullYear()} Chelle Creator Hub</p>
+          <p>GCash · GoTyme · PayPal — payments confirmed manually</p>
         </div>
       </footer>
     </div>
