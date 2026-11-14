@@ -9,7 +9,8 @@ import { fileExt, uniqueName, uploadFile, videoPoster } from "@/lib/upload";
 import { SUGGESTED_TAGS } from "@/lib/types";
 import { cn, parseTags } from "@/lib/utils";
 
-const MAX_MB = 250;
+// Matches the `bottle` bucket limit (Supabase free plan: 50 MB per file).
+const MAX_MB = 50;
 
 export function PostForm({ userId, challenges, fixedChallenge, days, doneDays = [], explanation }: {
   userId: string;
@@ -35,7 +36,7 @@ export function PostForm({ userId, challenges, fixedChallenge, days, doneDays = 
   function pick(f?: File) {
     if (!f) return;
     if (!f.type.startsWith("video/")) return toast("Please choose a video file.", "error");
-    if (f.size > MAX_MB * 1024 * 1024) return toast(`Videos must be under ${MAX_MB}MB. Export at 1080p for best results.`, "error");
+    if (f.size > MAX_MB * 1024 * 1024) return toast(`Videos must be under ${MAX_MB}MB. Try exporting at 1080p or 720p, 30fps, under 60 seconds.`, "error");
     setFile(f); setPreview(URL.createObjectURL(f));
   }
   const addTag = (t: string) => setTags((x) => parseTags([...x, t].join(" ")));

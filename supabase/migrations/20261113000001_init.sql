@@ -997,9 +997,10 @@ revoke execute on function public.reject_payment(uuid, text) from anon;
 -- Storage
 -- =====================================================================
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types) values
-  ('course-media', 'course-media', false, 2147483648, null),                       -- lesson videos + downloads (private)
+  -- 50 MB = Supabase free-plan per-file maximum. Raise after upgrading (Pro allows much larger files).
+  ('course-media', 'course-media', false, 52428800,  null),                       -- lesson videos + downloads (private)
   ('receipts',     'receipts',     false, 10485760,  array['image/png','image/jpeg','image/webp','image/heic','application/pdf']),
-  ('bottle',       'bottle',       true,  262144000, array['video/mp4','video/quicktime','video/webm','image/jpeg','image/png','image/webp']),
+  ('bottle',       'bottle',       true,  52428800,  array['video/mp4','video/quicktime','video/webm','image/jpeg','image/png','image/webp']),
   ('avatars',      'avatars',      true,  5242880,   array['image/png','image/jpeg','image/webp']),
   ('public-assets','public-assets',true,  52428800,  null)
 on conflict (id) do nothing;
