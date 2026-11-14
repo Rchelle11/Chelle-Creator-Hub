@@ -30,7 +30,7 @@ export async function createPost(input: {
     if (error) return fail(error);
     postId = data.id;
   }
-  revalidatePath("/bottle");
+  revalidatePath("/battles");
   revalidatePath("/dashboard");
   return { ok: true, data: postId };
 }
@@ -41,6 +41,6 @@ export async function deletePost(postId: string): Promise<ActionResult> {
   const { error } = await supabase.from("posts").delete().eq("id", postId);
   if (error) return fail(error);
   if (post?.video_path) await supabase.storage.from("bottle").remove([post.video_path, post.video_path.replace(/\.[^.]+$/, ".jpg")]);
-  revalidatePath("/bottle");
+  revalidatePath("/battles");
   return { ok: true };
 }

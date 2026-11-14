@@ -31,7 +31,7 @@ export default async function CompletePage({ params }: { params: Promise<{ slug:
       </div>
 
       <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-        <Link href="/bottle/new" className="btn-primary"><Clapperboard className="size-4" /> Share your best work</Link>
+        <Link href="/battles/new" className="btn-primary"><Clapperboard className="size-4" /> Share your best work</Link>
         <Link href="/challenges" className="btn-ghost"><Trophy className="size-4" /> Join a challenge</Link>
       </div>
     </div>

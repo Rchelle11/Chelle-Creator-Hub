@@ -37,8 +37,8 @@ export function BottlePost({ post, userId, isAdmin, canInteract, onDeleted }: {
     if (error && error.code !== "23505") { setLiked(!next); setLikes((n) => n + (next ? -1 : 1)); toast("Something went wrong. Please try again.", "error"); }
   }
   async function share() {
-    const url = `${location.origin}/bottle/${post.id}`;
-    if (navigator.share) { try { await navigator.share({ title: "ROCHELLE OS · Bottle", text: post.caption, url }); } catch {} }
+    const url = `${location.origin}/battles/${post.id}`;
+    if (navigator.share) { try { await navigator.share({ title: "ROCHELLE OS · Battles", text: post.caption, url }); } catch {} }
     else { await navigator.clipboard.writeText(url); toast("Link copied."); }
   }
   async function remove() {
@@ -65,7 +65,7 @@ export function BottlePost({ post, userId, isAdmin, canInteract, onDeleted }: {
             <span><span className="block text-sm font-semibold">{post.author?.full_name}</span><span className="block text-[11px] text-white/60">{timeAgo(post.created_at)}</span></span>
           </Link>
           {post.caption && <p className="pointer-events-auto mt-2.5 line-clamp-3 text-sm leading-snug">{post.caption}</p>}
-          {!!post.tags.length && <p className="pointer-events-auto mt-1.5 flex flex-wrap gap-x-2 text-[13px] font-semibold text-white/85">{post.tags.map((t) => <Link key={t} href={`/bottle?tag=${encodeURIComponent(t)}`}>#{t}</Link>)}</p>}
+          {!!post.tags.length && <p className="pointer-events-auto mt-1.5 flex flex-wrap gap-x-2 text-[13px] font-semibold text-white/85">{post.tags.map((t) => <Link key={t} href={`/battles?tag=${encodeURIComponent(t)}`}>#{t}</Link>)}</p>}
         </div>
         {/* Mobile action rail */}
         <div className="absolute bottom-24 right-3 flex flex-col gap-4 md:hidden">

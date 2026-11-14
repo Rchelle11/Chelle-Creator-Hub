@@ -31,7 +31,7 @@ export default async function AdminOverview() {
         <Link href="/admin/payments?status=pending"><StatCard label="Pending payments" value={<span className={o.pending_payments ? "text-warn" : ""}>{o.pending_payments}</span>} hint="Review now →" icon={<Clock className="size-4" />} /></Link>
         <StatCard label="Total sales" value={peso(o.total_sales)} hint={`${peso(o.sales_30d)} last 30d`} icon={<Wallet className="size-4" />} />
         <StatCard label="Course completion" value={`${o.completion_rate}%`} hint={`avg progress ${o.avg_progress}%`} icon={<GraduationCap className="size-4" />} />
-        <StatCard label="Bottle posts" value={o.bottle_posts} hint={`${o.active_creators} active creators`} icon={<Clapperboard className="size-4" />} />
+        <StatCard label="Battles posts" value={o.bottle_posts} hint={`${o.active_creators} active creators`} icon={<Clapperboard className="size-4" />} />
       </section>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">

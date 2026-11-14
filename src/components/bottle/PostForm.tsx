@@ -59,7 +59,7 @@ export function PostForm({ userId, challenges, fixedChallenge, days, doneDays = 
       });
       if (!r.ok) throw new Error(r.error);
       toast("Your post is now live.");
-      router.push(fixedChallenge ? `/challenges/${fixedChallenge.id}` : `/bottle/${r.data}`);
+      router.push(fixedChallenge ? `/challenges/${fixedChallenge.id}` : `/battles/${r.data}`);
       router.refresh();
     } catch (err) {
       toast(err instanceof Error ? err.message : "Something went wrong. Please try again.", "error");

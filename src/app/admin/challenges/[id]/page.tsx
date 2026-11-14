@@ -25,7 +25,7 @@ export default async function AdminChallenge({ params }: { params: Promise<{ id:
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {(subs ?? []).map((s) => (
               <div key={s.id} className="glass overflow-hidden">
-                <Link href={s.post ? `/bottle/${s.post.id}` : "#"} className="relative block aspect-[9/16] bg-black">
+                <Link href={s.post ? `/battles/${s.post.id}` : "#"} className="relative block aspect-[9/16] bg-black">
                   {s.post && <video src={s.post.video_url} poster={s.post.poster_url ?? undefined} muted playsInline preload="metadata" className="size-full object-cover" />}
                   <span className="absolute left-2 top-2"><Badge tone={s.status === "winner" ? "gold" : s.status === "featured" ? "accent" : "neutral"}>Day {s.day} · {s.status}</Badge></span>
                 </Link>

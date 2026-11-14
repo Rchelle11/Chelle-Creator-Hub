@@ -15,7 +15,7 @@ export default async function SubmitPage({ params }: { params: Promise<{ id: str
   if (!me || c.status !== "active") redirect(`/challenges/${id}`);
   return (
     <>
-      <PageHeader eyebrow="Challenge submission" title="Submit Your Work" subtitle="Your submission appears in Bottle with a challenge badge." />
+      <PageHeader eyebrow="Challenge submission" title="Submit Your Work" subtitle="Your submission appears in Battles with a challenge badge." />
       <PostForm userId={user.id} challenges={[]} fixedChallenge={{ id: c.id, title: c.title }} days={c.days} doneDays={(subs ?? []).map((s) => s.day)} explanation />
     </>
   );

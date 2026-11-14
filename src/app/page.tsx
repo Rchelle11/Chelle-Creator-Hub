@@ -168,7 +168,7 @@ export default async function Landing() {
       {/* Student work */}
       {posts.length > 0 && (
         <section className="mx-auto max-w-6xl px-4 py-16 md:px-6">
-          <p className="eyebrow mb-3">Student work · from Bottle</p>
+          <p className="eyebrow mb-3">Student work · from Battles</p>
           <h2 className="h-display text-4xl md:text-5xl">Made by students like you.</h2>
           <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
             {posts.map((p) => (

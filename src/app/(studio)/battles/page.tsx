@@ -9,7 +9,7 @@ import type { FeedPost } from "@/lib/types";
 import { SUGGESTED_TAGS } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-export const metadata = { title: "Bottle" };
+export const metadata = { title: "Battles" };
 
 export default async function BottlePage({ searchParams }: { searchParams: Promise<{ tag?: string; view?: string }> }) {
   const { tag, view } = await searchParams;
@@ -33,8 +33,8 @@ export default async function BottlePage({ searchParams }: { searchParams: Promi
     return [a.id, a];
   })).values());
 
-  const filters = [{ label: "For You", href: "/bottle", active: !tag && !featured }, { label: "Featured", href: "/bottle?view=featured", active: featured },
-    ...SUGGESTED_TAGS.map((t) => ({ label: `#${t}`, href: `/bottle?tag=${t}`, active: tag === t }))];
+  const filters = [{ label: "For You", href: "/battles", active: !tag && !featured }, { label: "Featured", href: "/battles?view=featured", active: featured },
+    ...SUGGESTED_TAGS.map((t) => ({ label: `#${t}`, href: `/battles?tag=${t}`, active: tag === t }))];
 
   return (
     <div className="-mx-4 -mb-28 -mt-5 md:m-0 md:grid md:grid-cols-[minmax(0,1fr)_300px] md:gap-8">
@@ -42,8 +42,8 @@ export default async function BottlePage({ searchParams }: { searchParams: Promi
         {/* Mobile overlay header */}
         <div className="pointer-events-none absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-black/70 to-transparent px-4 pb-8 pt-3 md:hidden">
           <div className="pointer-events-auto flex items-center justify-between">
-            <span className="text-sm font-extrabold tracking-[0.22em]">BOTTLE</span>
-            {canPost && <Link href="/bottle/new" className="btn-primary btn-sm"><Plus className="size-4" /> POST</Link>}
+            <span className="text-sm font-extrabold tracking-[0.22em]">BATTLES</span>
+            {canPost && <Link href="/battles/new" className="btn-primary btn-sm"><Plus className="size-4" /> POST</Link>}
           </div>
           <div className="no-scrollbar pointer-events-auto -mx-4 mt-2 flex gap-1.5 overflow-x-auto px-4">
             {filters.map((f) => <Link key={f.href} href={f.href} className={cn("chip shrink-0 bg-black/30 backdrop-blur", f.active && "border-white/40 text-white")}>{f.label}</Link>)}
@@ -53,17 +53,17 @@ export default async function BottlePage({ searchParams }: { searchParams: Promi
           <BottleFeed key={`${tag}-${featured}`} initial={posts} userId={user.id} isAdmin={profile.role === "admin"} canInteract={!!canPost} tag={tag} featured={featured} />
         ) : (
           <div className="grid h-full place-items-center px-4 pt-24 md:pt-0">
-            <EmptyState icon={Clapperboard} title="Nothing here yet." body="Be the first creator to share your work." cta={canPost ? "Post Your First Video" : undefined} href="/bottle/new" />
+            <EmptyState icon={Clapperboard} title="Nothing here yet." body="Be the first creator to share your work." cta={canPost ? "Post Your First Video" : undefined} href="/battles/new" />
           </div>
         )}
       </div>
 
       <aside className="hidden space-y-5 md:block">
         <div>
-          <h1 className="h-display text-5xl">BOTTLE</h1>
+          <h1 className="h-display text-5xl">BATTLES</h1>
           <p className="mt-2 text-sm text-mute">Post your work. Get feedback. Get inspired.</p>
           {canPost
-            ? <Link href="/bottle/new" className="btn-primary mt-5 w-full"><Plus className="size-4" /> POST YOUR VIDEO</Link>
+            ? <Link href="/battles/new" className="btn-primary mt-5 w-full"><Plus className="size-4" /> POST YOUR VIDEO</Link>
             : <Link href="/courses" className="btn-ghost mt-5 w-full">Enroll to start posting</Link>}
         </div>
         <div className="flex flex-wrap gap-1.5">

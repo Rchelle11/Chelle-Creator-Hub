@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { COOKIE_OPTIONS, SUPABASE_KEY, SUPABASE_URL, isConfigured } from "./env";
 
-const PROTECTED = ["/dashboard", "/courses", "/checkout", "/payment-status", "/bottle", "/u/", "/challenges",
+const PROTECTED = ["/dashboard", "/courses", "/checkout", "/payment-status", "/battles", "/u/", "/challenges",
   "/community", "/messages", "/announcements", "/notifications", "/account", "/search", "/admin"];
 const AUTH_PAGES = ["/login", "/signup"];
 

@@ -19,8 +19,8 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     shortcuts: [
       { name: "Continue learning", url: "/courses" },
-      { name: "Bottle", url: "/bottle" },
-      { name: "Post a video", url: "/bottle/new" },
+      { name: "Battles", url: "/battles" },
+      { name: "Post a video", url: "/battles/new" },
     ],
   };
 }

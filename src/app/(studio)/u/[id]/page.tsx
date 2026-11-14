@@ -54,7 +54,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
             <h2 className="label mb-3">Their work</h2>
             {posts?.length ? <PostGrid posts={posts} /> : (
               <EmptyState icon={Clapperboard} title="Nothing here yet." body={own ? "Be the first creator to share your work." : "No videos posted yet."}
-                cta={own ? "Post Your First Video" : undefined} href="/bottle/new" />
+                cta={own ? "Post Your First Video" : undefined} href="/battles/new" />
             )}
           </section>
         </>

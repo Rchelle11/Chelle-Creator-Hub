@@ -7,7 +7,7 @@ import { ActionButton } from "@/components/admin/ActionButton";
 import { adminDeleteComment, adminDeletePost, moderatePost } from "@/lib/actions/admin";
 import { timeAgo } from "@/lib/utils";
 
-export const metadata = { title: "Bottle Moderation" };
+export const metadata = { title: "Battles Moderation" };
 
 export default async function BottleModeration({ searchParams }: { searchParams: Promise<{ status?: string; q?: string }> }) {
   const { status = "", q = "" } = await searchParams;
@@ -24,15 +24,15 @@ export default async function BottleModeration({ searchParams }: { searchParams:
 
   return (
     <>
-      <PageHeader eyebrow="Admin" title="Bottle Moderation" subtitle="Feature great work, pin highlights, hide what doesn't belong." />
+      <PageHeader eyebrow="Admin" title="Battles Moderation" subtitle="Feature great work, pin highlights, hide what doesn't belong." />
       <form className="mb-4"><input type="hidden" name="status" value={status} /><input name="q" defaultValue={q} placeholder="Search captions…" className="input max-w-md" /></form>
-      <FilterTabs base={`/admin/bottle${q ? `?q=${encodeURIComponent(q)}` : ""}`} active={status}
+      <FilterTabs base={`/admin/battles${q ? `?q=${encodeURIComponent(q)}` : ""}`} active={status}
         tabs={[{ id: "", label: "All" }, { id: "published", label: "Published" }, { id: "hidden", label: "Hidden" }, { id: "featured", label: "Featured" }, { id: "pinned", label: "Pinned" }]} />
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {(posts ?? []).map((p) => (
             <div key={p.id} className="glass overflow-hidden">
-              <Link href={`/bottle/${p.id}`} className="relative block aspect-[9/16] bg-black">
+              <Link href={`/battles/${p.id}`} className="relative block aspect-[9/16] bg-black">
                 <video src={p.video_url} poster={p.poster_url ?? undefined} muted playsInline preload="metadata" className="size-full object-cover" />
                 <div className="absolute left-2 top-2 flex flex-wrap gap-1">
                   {p.featured && <Badge tone="gold">★ Featured</Badge>}{p.pinned && <Badge tone="gold">Pinned</Badge>}{p.status !== "published" && <Badge tone="bad">{p.status}</Badge>}
@@ -60,7 +60,7 @@ export default async function BottleModeration({ searchParams }: { searchParams:
               <div key={c.id} className="flex gap-2 text-sm">
                 <div className="min-w-0 flex-1">
                   <p className="text-xs"><b>{(c.author as unknown as { full_name: string })?.full_name}</b> <span className="text-mute">· {timeAgo(c.created_at)}</span></p>
-                  <Link href={`/bottle/${c.post_id}`} className="line-clamp-2 text-soft hover:text-white">{c.content}</Link>
+                  <Link href={`/battles/${c.post_id}`} className="line-clamp-2 text-soft hover:text-white">{c.content}</Link>
                 </div>
                 <ActionButton title="Delete comment" className="btn-quiet btn-sm px-2 text-bad" confirm="Delete this comment?" action={adminDeleteComment.bind(null, c.id, "comments")}><Trash2 className="size-3.5" /></ActionButton>
               </div>

@@ -1,6 +1,6 @@
 # ROCHELLE OS — Short Video Masterclass
 
-A mobile-first creator academy + community: courses with progress tracking, manual GCash/GoTyme/PayPal checkout with admin approval → automatic enrollment, the **Bottle** vertical video feed, challenges, leaderboard, community, announcements, notifications, messages and a full admin dashboard. Installable as a PWA.
+A mobile-first creator academy + community: courses with progress tracking, manual GCash/GoTyme/PayPal checkout with admin approval → automatic enrollment, the **Battles** vertical video feed, challenges, leaderboard, community, announcements, notifications, messages and a full admin dashboard. Installable as a PWA.
 
 **Stack:** Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · Supabase (Postgres, Auth, Storage, Realtime) · Lucide · Vercel
 

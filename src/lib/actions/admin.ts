@@ -113,7 +113,7 @@ export const moderatePost = async (id: string, patch: { featured?: boolean; pinn
   const { supabase } = await admin();
   const { error } = await supabase.from("posts").update(patch).eq("id", id);
   return error ? fail(error) : done("Post updated.");
-}, "/admin/bottle", "/bottle");
+}, "/admin/battles", "/battles");
 
 export const adminDeletePost = async (id: string) => guard(async () => {
   const { supabase } = await admin();
@@ -122,13 +122,13 @@ export const adminDeletePost = async (id: string) => guard(async () => {
   if (error) return fail(error);
   if (post?.video_path) await supabase.storage.from("bottle").remove([post.video_path, post.video_path.replace(/\.[^.]+$/, ".jpg")]);
   return done("Post deleted.");
-}, "/admin/bottle", "/bottle");
+}, "/admin/battles", "/battles");
 
 export const adminDeleteComment = async (id: string, table: "comments" | "community_comments" = "comments") => guard(async () => {
   const { supabase } = await admin();
   const { error } = await supabase.from(table).delete().eq("id", id);
   return error ? fail(error) : done("Comment deleted.");
-}, "/admin/bottle");
+}, "/admin/battles");
 
 // ---------- challenges ----------
 export type ChallengeInput = { id?: string; title: string; description: string; instructions: string; cover_url: string | null; reference_video_url: string | null; days: number; start_date: string; end_date: string; status: "draft" | "active" | "ended" };

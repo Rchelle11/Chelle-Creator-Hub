@@ -33,7 +33,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       {!!lessons.length && <Section title="Lessons">{(lessons as unknown as { id: string; title: string; course: { slug: string } }[]).map((l) => <Row key={l.id} href={`/courses/${l.course.slug}/${l.id}`} icon={<PlayCircle className="size-4 text-accent" />} text={l.title} />)}</Section>}
       {!!people.length && <Section title="Students">{(people as { id: string; full_name: string; avatar_url: string | null }[]).map((p) => <Row key={p.id} href={`/u/${p.id}`} icon={<Avatar name={p.full_name} src={p.avatar_url} size={28} />} text={p.full_name} />)}</Section>}
       {!!discussions.length && <Section title="Community">{(discussions as { id: string; title: string }[]).map((d) => <Row key={d.id} href={`/community/${d.id}`} icon={<MessagesSquare className="size-4 text-accent" />} text={d.title} />)}</Section>}
-      {!!posts.length && <div><h2 className="label mb-3">Bottle posts</h2><PostGrid posts={posts as never} /></div>}
+      {!!posts.length && <div><h2 className="label mb-3">Battles posts</h2><PostGrid posts={posts as never} /></div>}
     </div>
   );
 }

@@ -95,11 +95,11 @@ export default async function Dashboard() {
         <section>
           <div className="mb-3 flex items-end justify-between">
             <h2 className="text-lg font-semibold">Featured Creators</h2>
-            <Link href="/bottle" className="text-sm font-semibold text-accent">Open Bottle →</Link>
+            <Link href="/battles" className="text-sm font-semibold text-accent">Open Battles →</Link>
           </div>
           <div className="grid grid-cols-3 gap-2.5 md:gap-4">
             {(featured as unknown as { id: string; video_url: string; poster_url: string | null; caption: string; author: { full_name: string } | null }[]).map((p) => (
-              <Link key={p.id} href={`/bottle/${p.id}`} className="group relative aspect-[9/16] overflow-hidden rounded-2xl border border-line bg-ink-3">
+              <Link key={p.id} href={`/battles/${p.id}`} className="group relative aspect-[9/16] overflow-hidden rounded-2xl border border-line bg-ink-3">
                 <video src={p.video_url} poster={p.poster_url ?? undefined} muted playsInline preload="metadata" className="size-full object-cover transition duration-500 group-hover:scale-105" />
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 p-2.5 pt-10 text-[11px] font-semibold md:p-4 md:text-sm">{p.author?.full_name}</div>
               </Link>
