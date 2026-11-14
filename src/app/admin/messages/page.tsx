@@ -35,7 +35,7 @@ export default async function AdminMessages() {
             <Link key={t.other.id} href={`/admin/students/${t.other.id}`} className={cn("flex items-center gap-3 p-4 hover:bg-white/[0.03]", t.unread && "bg-accent/[0.05]")}>
               <Avatar name={t.other.full_name} src={t.other.avatar_url} size={40} />
               <div className="min-w-0 flex-1"><p className="text-sm font-semibold">{t.other.full_name}</p><p className="truncate text-sm text-mute">{t.last.mine ? "You: " : ""}{t.last.content}</p></div>
-              <span className="text-right text-xs text-mute">{timeAgo(t.last.created_at)}{t.unread > 0 && <span className="mt-1 block rounded-full bg-accent px-1.5 text-center text-[10px] font-bold text-white">{t.unread}</span>}</span>
+              <span className="text-right text-xs text-mute">{timeAgo(t.last.created_at)}{t.unread > 0 && <span className="mt-1 block rounded-full bg-accent px-1.5 text-center text-[10px] font-bold text-pure">{t.unread}</span>}</span>
             </Link>
           ))}
           {!threads.size && <p className="p-10 text-center text-sm text-mute">No conversations yet.</p>}

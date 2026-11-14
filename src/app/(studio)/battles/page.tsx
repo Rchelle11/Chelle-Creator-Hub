@@ -40,13 +40,13 @@ export default async function BottlePage({ searchParams }: { searchParams: Promi
     <div className="-mx-4 -mb-28 -mt-5 md:m-0 md:grid md:grid-cols-[minmax(0,1fr)_300px] md:gap-8">
       <div className="relative h-[calc(100dvh-7.5rem-env(safe-area-inset-bottom)-env(safe-area-inset-top))] md:h-[calc(100dvh-8rem)]">
         {/* Mobile overlay header */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-black/70 to-transparent px-4 pb-8 pt-3 md:hidden">
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 text-pure bg-gradient-to-b from-black/70 to-transparent px-4 pb-8 pt-3 md:hidden">
           <div className="pointer-events-auto flex items-center justify-between">
             <span className="text-sm font-extrabold tracking-[0.22em]">BATTLES</span>
             {canPost && <Link href="/battles/new" className="btn-primary btn-sm"><Plus className="size-4" /> POST</Link>}
           </div>
           <div className="no-scrollbar pointer-events-auto -mx-4 mt-2 flex gap-1.5 overflow-x-auto px-4">
-            {filters.map((f) => <Link key={f.href} href={f.href} className={cn("chip shrink-0 bg-black/30 backdrop-blur", f.active && "border-white/40 text-white")}>{f.label}</Link>)}
+            {filters.map((f) => <Link key={f.href} href={f.href} className={cn("chip shrink-0 border-pure/20 bg-black/30 text-pure/80 backdrop-blur", f.active && "border-pure/60 text-pure")}>{f.label}</Link>)}
           </div>
         </div>
         {posts.length ? (

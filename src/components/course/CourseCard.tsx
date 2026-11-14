@@ -16,6 +16,7 @@ export function CourseCard({ slug, title, description, thumbnail, modules, lesso
           ? <img src={thumbnail} alt="" className="size-full object-cover transition duration-700 group-hover:scale-105" />
           : <div className="size-full bg-gradient-to-br from-accent/40 to-ink-3" />}
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent md:bg-gradient-to-r md:from-transparent md:to-ink/80" />
+        {price === 0 && <span className="absolute left-3 top-3 rounded-lg bg-ok px-3 py-1 text-sm font-black tracking-widest text-black/85 shadow-lg">FREE</span>}
       </Link>
       <div className="flex flex-col p-5 md:p-7">
         {!enrolled && (

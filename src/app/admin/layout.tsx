@@ -4,6 +4,7 @@ import { Sidebar } from "@/components/nav/Sidebar";
 import { NotificationBell } from "@/components/nav/NotificationBell";
 import { AdminMobileNav } from "@/components/admin/AdminMobileNav";
 import { Logo } from "@/components/ui/Logo";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 export const metadata = { title: { default: "Admin", template: "%s · Admin · ROCHELLE OS" } };
 
@@ -19,7 +20,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <div className="md:hidden"><Logo href="/admin" compact /></div>
             <span className="text-[10px] font-bold tracking-[0.2em] text-accent md:hidden">ADMIN</span>
             <Link href="/dashboard" className="btn-quiet btn-sm ml-auto md:hidden">Student view</Link>
-            <div className="md:ml-auto"><NotificationBell userId={user.id} /></div>
+            <div className="flex items-center md:ml-auto"><ThemeToggle /><NotificationBell userId={user.id} /></div>
           </div>
         </header>
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 pb-16 pt-0 md:px-8 md:pt-8">

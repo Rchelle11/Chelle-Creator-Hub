@@ -4,6 +4,7 @@ import {
   Check, Play, Heart, Users, Briefcase, Smartphone, Building2, Film, Bot, GraduationCap,
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { createClient } from "@/lib/supabase/server";
 import { isConfigured } from "@/lib/supabase/env";
 import { peso } from "@/lib/utils";
@@ -26,11 +27,15 @@ const FALLBACK_MODULES = [
 const SLUG = "short-video-masterclass";
 
 async function getData() {
-  if (!isConfigured) return { price: 5499, modules: FALLBACK_MODULES, posts: [] as Showcase[], signedIn: false };
+  if (!isConfigured) return { price: 5499, modules: FALLBACK_MODULES, posts: [] as Showcase[], signedIn: false, free: [] as FreeCourse[] };
   const supabase = await createClient();
   const [{ data: course }, { data: auth }] = await Promise.all([
     supabase.from("courses").select("id, price").eq("slug", SLUG).maybeSingle(),
     supabase.auth.getUser(),
+  ]);
+  const [{ data: free }, { data: freeLessons }] = await Promise.all([
+    supabase.from("courses").select("id, slug, title, description, thumbnail_url").eq("published", true).eq("price", 0).order("created_at").limit(3),
+    supabase.from("lessons").select("course_id").eq("published", true),
   ]);
   const [{ data: modules }, { data: lessons }, { data: posts }] = await Promise.all([
     supabase.from("modules").select("id, title, position").eq("course_id", course?.id ?? "").order("position"),
@@ -45,12 +50,15 @@ async function getData() {
       : FALLBACK_MODULES,
     posts: (posts ?? []) as unknown as Showcase[],
     signedIn: !!auth.user,
+    free: (free ?? []).map((c) => ({ ...c, lessons: (freeLessons ?? []).filter((l) => l.course_id === c.id).length })) as FreeCourse[],
   };
 }
+type FreeCourse = { id: string; slug: string; title: string; description: string; thumbnail_url: string | null; lessons: number };
 type Showcase = { id: string; video_url: string; poster_url: string | null; caption: string; like_count: number; author: { full_name: string } | null };
 
 export default async function Landing() {
-  const { price, modules, posts, signedIn } = await getData();
+  const { price, modules, posts, signedIn, free } = await getData();
+  const freeHref = (slug: string) => (signedIn ? `/courses/${slug}` : `/signup?next=${encodeURIComponent(`/courses/${slug}`)}`);
   const totalLessons = modules.reduce((a, m) => a + m.count, 0);
 
   return (
@@ -59,11 +67,13 @@ export default async function Landing() {
       <nav className="sticky top-0 z-40 border-b border-line/60 bg-ink/70 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:px-6">
           <Logo />
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
+            <ThemeToggle />
             {signedIn ? (
               <Link href="/dashboard" className="btn-primary btn-sm">Open Studio</Link>
             ) : (
               <>
+                {free.length > 0 && <a href="#free" className="btn-quiet btn-sm hidden sm:inline-flex"><span className="rounded bg-ok px-1.5 py-0.5 text-[10px] font-black tracking-wider text-black/85">FREE</span> Tutorials</a>}
                 <Link href="/login" className="btn-quiet btn-sm">Login</Link>
                 <Link href="/signup" className="btn-primary btn-sm">Start Learning</Link>
               </>
@@ -86,6 +96,11 @@ export default async function Landing() {
             <Link href={`/checkout/${SLUG}`} className="btn-primary h-13 px-7 text-[15px]">Start Learning <ArrowRight className="size-4" /></Link>
             <a href="#curriculum" className="btn-ghost h-13 px-7 text-[15px]">Explore the Masterclass</a>
           </div>
+          {free.length > 0 && (
+            <a href="#free" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-ok hover:underline">
+              <span className="rounded bg-ok px-2 py-0.5 text-[11px] font-black tracking-wider text-black/85">FREE</span> Not ready yet? Watch the free tutorials first →
+            </a>
+          )}
           <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-mute">
             <span className="flex items-center gap-2"><Check className="size-4 text-ok" /> {totalLessons} video lessons</span>
             <span className="flex items-center gap-2"><Check className="size-4 text-ok" /> Creator community</span>
@@ -96,13 +111,13 @@ export default async function Landing() {
         {/* Phone mock */}
         <div className="relative mx-auto w-[260px] md:w-[300px]">
           <div className="absolute -inset-10 rounded-full bg-accent/20 blur-3xl" />
-          <div className="relative aspect-[9/19] overflow-hidden rounded-[44px] border-[6px] border-white/10 bg-ink-3 shadow-2xl">
+          <div className="relative aspect-[9/19] overflow-hidden rounded-[44px] border-[6px] border-black/60 bg-black text-pure shadow-2xl">
             <video src={posts[0]?.video_url ?? "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"}
               poster={posts[0]?.poster_url ?? undefined}
               className="size-full object-cover opacity-90" autoPlay muted loop playsInline preload="metadata" />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-5 pt-20">
               <p className="text-xs font-semibold">@{(posts[0]?.author?.full_name ?? "maria").split(" ")[0].toLowerCase()}</p>
-              <p className="mt-1 line-clamp-2 text-xs text-soft">{posts[0]?.caption ?? "My first AI product commercial!"}</p>
+              <p className="mt-1 line-clamp-2 text-xs text-pure/80">{posts[0]?.caption ?? "My first AI product commercial!"}</p>
             </div>
             <div className="absolute bottom-24 right-3 flex flex-col items-center gap-4 text-xs">
               <span className="grid place-items-center"><Heart className="size-6 fill-accent text-accent" />{posts[0]?.like_count ?? 128}</span>
@@ -125,6 +140,36 @@ export default async function Landing() {
           ))}
         </div>
       </section>
+
+      {/* Free tutorials */}
+      {free.length > 0 && (
+        <section id="free" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 md:px-6">
+          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-ok">Free tutorials</p>
+          <h2 className="h-display max-w-2xl text-4xl md:text-5xl">Start learning for <em className="text-ok">free</em>.</h2>
+          <p className="mt-3 max-w-xl text-soft">Create a free account and watch these lessons right away. No payment needed.</p>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {free.map((c) => (
+              <Link key={c.id} href={freeHref(c.slug)} className="glass glass-hover group overflow-hidden">
+                <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-ok/30 to-ink-3">
+                  {c.thumbnail_url && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={c.thumbnail_url} alt="" className="size-full object-cover transition duration-700 group-hover:scale-105" />
+                  )}
+                  <span className="absolute left-3 top-3 rounded-lg bg-ok px-3 py-1 text-sm font-black tracking-widest text-black/85 shadow-lg">FREE</span>
+                </div>
+                <div className="p-5">
+                  <h3 className="text-lg font-semibold">{c.title}</h3>
+                  <p className="mt-1 line-clamp-2 text-sm text-mute">{c.description}</p>
+                  <p className="mt-4 flex items-center justify-between text-sm">
+                    <span className="flex items-center gap-2 text-xs text-mute"><Play className="size-3.5" /> {c.lessons} free lessons</span>
+                    <span className="font-semibold text-ok">Watch free →</span>
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Who it's for */}
       <section className="mx-auto max-w-6xl px-4 py-16 md:px-6">
@@ -172,11 +217,11 @@ export default async function Landing() {
           <h2 className="h-display text-4xl md:text-5xl">Made by students like you.</h2>
           <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
             {posts.map((p) => (
-              <div key={p.id} className="relative aspect-[9/16] overflow-hidden rounded-2xl border border-line bg-ink-3">
+              <div key={p.id} className="relative aspect-[9/16] overflow-hidden rounded-2xl border border-line bg-black text-pure">
                 <video src={p.video_url} poster={p.poster_url ?? undefined} muted loop playsInline autoPlay preload="metadata" className="size-full object-cover" />
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-3 pt-12">
                   <p className="text-xs font-semibold">{p.author?.full_name}</p>
-                  <p className="mt-0.5 line-clamp-2 text-[11px] text-soft">{p.caption}</p>
+                  <p className="mt-0.5 line-clamp-2 text-[11px] text-pure/80">{p.caption}</p>
                 </div>
               </div>
             ))}
@@ -186,7 +231,7 @@ export default async function Landing() {
 
       {/* Pricing / CTA */}
       <section className="mx-auto max-w-6xl px-4 py-20 md:px-6">
-        <div className="relative overflow-hidden rounded-3xl border border-line-2 bg-gradient-to-b from-ink-3 to-ink p-8 text-center md:p-16">
+        <div className="relative overflow-hidden rounded-3xl border border-line-2 bg-gradient-to-b from-ink-3 to-ink-2 p-8 text-center md:p-16">
           <div className="absolute left-1/2 top-0 h-64 w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/25 blur-3xl" />
           <p className="eyebrow relative mb-4">Join the masterclass</p>
           <h2 className="h-display relative mx-auto max-w-2xl text-4xl md:text-6xl">Ready to create your first short video?</h2>

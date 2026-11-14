@@ -15,8 +15,9 @@ export function ProgressRing({ value, size = 64 }: { value: number; size?: numbe
   const r = (size - 8) / 2, c = 2 * Math.PI * r;
   return (
     <svg width={size} height={size} className="-rotate-90">
-      <circle cx={size / 2} cy={size / 2} r={r} stroke="rgba(255,255,255,0.08)" strokeWidth="6" fill="none" />
-      <circle cx={size / 2} cy={size / 2} r={r} stroke="var(--color-accent)" strokeWidth="6" fill="none" strokeLinecap="round"
+      <defs><linearGradient id="ring-grad"><stop offset="0%" stopColor="var(--accent)" /><stop offset="100%" stopColor="var(--accent-2)" /></linearGradient></defs>
+      <circle cx={size / 2} cy={size / 2} r={r} stroke="var(--line-2)" strokeWidth="6" fill="none" />
+      <circle cx={size / 2} cy={size / 2} r={r} stroke="url(#ring-grad)" strokeWidth="6" fill="none" strokeLinecap="round"
         strokeDasharray={c} strokeDashoffset={c - (c * value) / 100} className="transition-[stroke-dashoffset] duration-1000" />
     </svg>
   );

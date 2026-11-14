@@ -76,7 +76,7 @@ export function PostForm({ userId, challenges, fixedChallenge, days, doneDays = 
         {preview ? (
           <div className="relative mx-auto aspect-[9/16] w-full max-w-[280px] overflow-hidden rounded-3xl border border-line bg-black">
             <video src={preview} className="size-full object-cover" controls playsInline muted />
-            {!busy && <button type="button" onClick={() => { setFile(null); setPreview(null); }} aria-label="Remove video" className="absolute right-2 top-2 grid size-9 place-items-center rounded-full bg-black/70"><X className="size-4" /></button>}
+            {!busy && <button type="button" onClick={() => { setFile(null); setPreview(null); }} aria-label="Remove video" className="absolute right-2 top-2 grid size-9 place-items-center rounded-full text-pure bg-black/70"><X className="size-4" /></button>}
           </div>
         ) : (
           <div className="mx-auto flex aspect-[9/16] w-full max-w-[280px] flex-col items-center justify-center gap-3 rounded-3xl border-2 border-dashed border-line-2 p-6 text-center"

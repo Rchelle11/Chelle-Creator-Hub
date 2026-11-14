@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/Toast";
 import { changePassword, updateProfile, updateSettings } from "@/lib/actions/account";
 import { compressImage, uniqueName, uploadFile } from "@/lib/upload";
 import type { Profile } from "@/lib/types";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 export function ProfileForm({ profile, email }: { profile: Profile; email: string }) {
   const toast = useToast();
@@ -37,7 +38,7 @@ export function ProfileForm({ profile, email }: { profile: Profile; email: strin
       <div className="flex items-center gap-4">
         <button type="button" onClick={() => input.current?.click()} className="group relative" aria-label="Change profile photo">
           <Avatar name={profile.full_name} src={avatar} size={76} />
-          <span className="absolute inset-0 grid place-items-center rounded-full bg-black/50 opacity-0 transition group-hover:opacity-100">
+          <span className="absolute inset-0 grid place-items-center rounded-full text-pure bg-black/50 opacity-0 transition group-hover:opacity-100">
             {uploading ? <Loader2 className="size-5 animate-spin" /> : <Camera className="size-5" />}
           </span>
         </button>
@@ -64,6 +65,7 @@ export function SettingsForm({ profile }: { profile: Profile }) {
   return (
     <div className="space-y-6">
       <div className="divide-y divide-line">
+        <div className="flex items-center justify-between gap-4 py-3"><span><span className="block text-sm font-medium">Appearance</span><span className="block text-xs text-mute">Switch between dark and light mode.</span></span><ThemeToggle withLabel className="border border-line" /></div>
         <Row s={s} toggle={toggle} pending={pending} k="notify_email" title="Email notifications" desc="Payment updates, announcements and feedback." />
         <Row s={s} toggle={toggle} pending={pending} k="notify_push" title="In-app notifications" desc="Likes, comments and challenge reminders." />
         <Row s={s} toggle={toggle} pending={pending} k="is_private" title="Private profile" desc="Hide your stats and work from other students." />
@@ -87,7 +89,7 @@ function Row({ k, title, desc, s, toggle, pending }: { k: keyof Settings; title:
     <label className="flex cursor-pointer items-center justify-between gap-4 py-3">
       <span><span className="block text-sm font-medium">{title}</span><span className="block text-xs text-mute">{desc}</span></span>
       <input type="checkbox" checked={s[k]} onChange={() => toggle(k)} disabled={pending} className="peer sr-only" />
-      <span className="relative h-7 w-12 shrink-0 rounded-full bg-white/10 transition after:absolute after:left-1 after:top-1 after:size-5 after:rounded-full after:bg-white after:transition peer-checked:bg-accent peer-checked:after:translate-x-5" />
+      <span className="relative h-7 w-12 shrink-0 rounded-full bg-white/10 transition after:absolute after:left-1 after:top-1 after:size-5 after:rounded-full after:bg-pure after:transition peer-checked:bg-accent peer-checked:after:translate-x-5" />
     </label>
   );
 }

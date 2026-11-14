@@ -7,8 +7,8 @@ import { Avatar } from "@/components/ui/Avatar";
 import { cn } from "@/lib/utils";
 import { ADMIN_NAV, STUDENT_NAV } from "./items";
 
-export function Sidebar({ variant, name, avatar, isAdmin, badges = {} }: {
-  variant: "student" | "admin"; name: string; avatar: string | null; isAdmin: boolean; badges?: Record<string, number>;
+export function Sidebar({ variant, name, avatar, isAdmin, badges = {}, freeTag }: {
+  variant: "student" | "admin"; name: string; avatar: string | null; isAdmin: boolean; badges?: Record<string, number>; freeTag?: boolean;
 }) {
   const path = usePathname();
   const items = variant === "admin" ? ADMIN_NAV : STUDENT_NAV;
@@ -25,7 +25,8 @@ export function Sidebar({ variant, name, avatar, isAdmin, badges = {} }: {
             {isActive(href) && <span className="absolute -left-3 h-5 w-1 rounded-r-full bg-accent" />}
             <Icon className={cn("size-[18px]", isActive(href) && "text-accent")} strokeWidth={1.8} />
             {label}
-            {!!badges[href] && <span className="ml-auto rounded-full bg-accent px-1.5 text-[10px] font-bold text-white">{badges[href]}</span>}
+            {freeTag && href === "/courses" && <span className="ml-auto rounded-md bg-ok px-1.5 py-0.5 text-[9px] font-black tracking-wider text-black/85">FREE</span>}
+            {!!badges[href] && <span className="ml-auto rounded-full bg-accent px-1.5 text-[10px] font-bold text-pure">{badges[href]}</span>}
           </Link>
         ))}
       </nav>

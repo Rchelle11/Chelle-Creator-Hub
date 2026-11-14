@@ -48,7 +48,7 @@ export function VerticalVideo({ src, poster, className, autoPlay = true }: { src
   };
 
   return (
-    <div ref={wrap} className={cn("relative overflow-hidden bg-black", className)}>
+    <div ref={wrap} className={cn("relative overflow-hidden bg-black text-pure", className)}>
       <video ref={ref} src={near ? src : undefined} poster={poster ?? undefined} loop playsInline muted={isMuted}
         preload={near ? "auto" : "none"} onClick={toggle}
         onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)}
@@ -56,12 +56,12 @@ export function VerticalVideo({ src, poster, className, autoPlay = true }: { src
         className="size-full cursor-pointer object-cover" />
       {flash && (
         <span className="pointer-events-none absolute left-1/2 top-1/2 grid size-16 -translate-x-1/2 -translate-y-1/2 animate-pop place-items-center rounded-full bg-black/50 backdrop-blur">
-          {flash === "play" ? <Play className="size-7 fill-white" /> : <Pause className="size-7 fill-white" />}
+          {flash === "play" ? <Play className="size-7 fill-pure" /> : <Pause className="size-7 fill-pure" />}
         </span>
       )}
       {!playing && !flash && near && (
         <button onClick={toggle} aria-label="Play" className="absolute left-1/2 top-1/2 grid size-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-black/40 backdrop-blur">
-          <Play className="size-7 fill-white" />
+          <Play className="size-7 fill-pure" />
         </button>
       )}
       <div className="absolute right-3 top-3 flex gap-2">
@@ -72,7 +72,7 @@ export function VerticalVideo({ src, poster, className, autoPlay = true }: { src
           <Maximize2 className="size-4" />
         </button>
       </div>
-      <div className="absolute inset-x-0 bottom-0 h-0.5 bg-white/10"><div className="h-full bg-white/80" style={{ width: `${progress}%` }} /></div>
+      <div className="absolute inset-x-0 bottom-0 h-0.5 bg-white/10"><div className="h-full bg-pure/80" style={{ width: `${progress}%` }} /></div>
     </div>
   );
 }

@@ -19,6 +19,10 @@ export default async function Dashboard() {
     supabase.from("posts").select("id, video_url, poster_url, caption, author:profiles!posts_user_id_fkey(full_name)").eq("featured", true).eq("status", "published").order("created_at", { ascending: false }).limit(3),
   ]);
 
+  const { data: freeCourses } = await supabase.from("courses").select("id, slug, title").eq("published", true).eq("price", 0).order("created_at");
+  const enrolledIds = new Set((enrollments ?? []).map((e) => e.course_id));
+  const freeToStart = (freeCourses ?? []).filter((c) => !enrolledIds.has(c.id));
+
   const current = enrollments?.[0] as { course: { slug: string; title: string } } | undefined;
   const data = current ? await loadCourse(supabase, current.course.slug, user.id) : null;
   const firstName = profile.full_name.split(" ")[0];
@@ -84,6 +88,18 @@ export default async function Dashboard() {
         <EmptyState icon={BookOpen} title="Your learning journey starts here." body="Unlock the Short Video Masterclass to start creating." cta="Explore Courses" href="/courses" />
       ) : null}
 
+      {freeToStart.length > 0 && (
+        <Link href={freeToStart.length === 1 ? `/courses/${freeToStart[0].slug}` : "/courses"}
+          className="flex items-center gap-4 rounded-2xl border border-ok/30 bg-gradient-to-r from-ok/15 to-transparent p-4 transition hover:border-ok/60 md:p-5">
+          <span className="shrink-0 rounded-lg bg-ok px-3 py-1.5 text-sm font-black tracking-widest text-black/85">FREE</span>
+          <span className="min-w-0 flex-1">
+            <span className="block font-semibold">{freeToStart.length === 1 ? freeToStart[0].title : `${freeToStart.length} free courses`}</span>
+            <span className="block text-sm text-mute">Watch free lessons now — no payment needed.</span>
+          </span>
+          <ArrowRight className="size-5 shrink-0 text-ok" />
+        </Link>
+      )}
+
       <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <StatCard label="Courses" value={enrollments?.length ?? 0} icon={<BookOpen className="size-4" />} />
         <StatCard label="Lessons Completed" value={lessonsDone ?? 0} icon={<CheckCircle2 className="size-4" />} />
@@ -99,7 +115,7 @@ export default async function Dashboard() {
           </div>
           <div className="grid grid-cols-3 gap-2.5 md:gap-4">
             {(featured as unknown as { id: string; video_url: string; poster_url: string | null; caption: string; author: { full_name: string } | null }[]).map((p) => (
-              <Link key={p.id} href={`/battles/${p.id}`} className="group relative aspect-[9/16] overflow-hidden rounded-2xl border border-line bg-ink-3">
+              <Link key={p.id} href={`/battles/${p.id}`} className="group relative aspect-[9/16] overflow-hidden rounded-2xl border border-line bg-black text-pure">
                 <video src={p.video_url} poster={p.poster_url ?? undefined} muted playsInline preload="metadata" className="size-full object-cover transition duration-500 group-hover:scale-105" />
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 p-2.5 pt-10 text-[11px] font-semibold md:p-4 md:text-sm">{p.author?.full_name}</div>
               </Link>

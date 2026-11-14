@@ -18,7 +18,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
   const post = { ...(data as FeedPost), liked: !!like };
   return (
     <div className="-mx-4 -mb-28 -mt-5 md:m-0">
-      <Link href="/battles" className="absolute z-20 m-3 inline-flex items-center gap-1 rounded-full bg-black/50 px-3 py-1.5 text-sm backdrop-blur md:static md:m-0 md:mb-3 md:bg-transparent md:p-0 md:text-mute"><ChevronLeft className="size-4" /> Battles</Link>
+      <Link href="/battles" className="absolute z-20 m-3 inline-flex items-center gap-1 rounded-full bg-black/50 px-3 py-1.5 text-sm text-pure backdrop-blur md:static md:m-0 md:mb-3 md:bg-transparent md:p-0 md:text-mute"><ChevronLeft className="size-4" /> Battles</Link>
       <div className="h-[calc(100dvh-7.5rem-env(safe-area-inset-bottom)-env(safe-area-inset-top))] md:h-[calc(100dvh-10rem)]">
         <BottlePost post={post} userId={user.id} isAdmin={profile.role === "admin"} canInteract={!!canPost} />
       </div>

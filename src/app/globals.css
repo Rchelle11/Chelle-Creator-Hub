@@ -1,19 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #09090b;
-  --color-ink-2: #0f0f12;
-  --color-ink-3: #16161a;
-  --color-line: rgb(255 255 255 / 0.08);
-  --color-line-2: rgb(255 255 255 / 0.14);
-  --color-mute: #8b8b94;
-  --color-soft: #c9c9d1;
-  --color-accent: #ff5a36;
-  --color-accent-2: #ff7a4d;
-  --color-gold: #e8c48a;
-  --color-ok: #3ddc97;
-  --color-warn: #f5b84a;
-  --color-bad: #ff4d5e;
+  /* Colors are CSS variables so the dark / light themes below can swap them. */
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-mute: var(--mute);
+  --color-soft: var(--soft);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-gold: var(--gold);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+  /* `white` is the theme foreground (light text in dark mode, dark text in light mode).
+     Use `pure` where real white is required (text on buttons, on videos...). */
+  --color-white: var(--fg);
+  --color-pure: #ffffff;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-serif-display), ui-serif, Georgia, serif;
   --animate-fade-up: fade-up 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
@@ -24,32 +29,56 @@
   @keyframes shimmer { from { background-position: -400px 0; } to { background-position: 400px 0; } }
 }
 
-:root { color-scheme: dark; }
-html, body { background: var(--color-ink); color: #f4f4f6; }
+/* ---------- Dark theme (default): deep navy + purple / pink ---------- */
+:root {
+  color-scheme: dark;
+  --ink: #171930; --ink-2: #1e2040; --ink-3: #282b50;
+  --fg: #f4f2fc; --soft: #cfcde6; --mute: #9795b8;
+  --line: rgb(255 255 255 / 0.08); --line-2: rgb(255 255 255 / 0.15);
+  --card: rgb(255 255 255 / 0.045); --card-hover: rgb(255 255 255 / 0.07); --card-shadow: none;
+  --accent: #a855f7; --accent-2: #ec4899; --gold: #f472b6;
+  --ok: #3ddc97; --warn: #f5b84a; --bad: #ff5d7a;
+  --glow-1: rgb(168 85 247 / 0.16); --glow-2: rgb(236 72 153 / 0.09);
+}
+/* ---------- Light theme: soft lavender + pink ---------- */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --ink: #f7f2fd; --ink-2: #ffffff; --ink-3: #efe6fa;
+  --fg: #241f3f; --soft: #4b4669; --mute: #7c7799;
+  --line: rgb(76 40 130 / 0.10); --line-2: rgb(76 40 130 / 0.18);
+  --card: #ffffff; --card-hover: #ffffff; --card-shadow: 0 6px 24px -12px rgb(120 60 190 / 0.22);
+  --accent: #9333ea; --accent-2: #db2777; --gold: #db2777;
+  --ok: #0e9f6e; --warn: #b7791f; --bad: #e11d48;
+  --glow-1: rgb(168 85 247 / 0.14); --glow-2: rgb(236 72 153 / 0.12);
+}
+
+html, body { background: var(--ink); color: var(--fg); }
+:root[data-theme="light"] .only-dark { display: none; }
+:root:not([data-theme="light"]) .only-light { display: none; }
 body { -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
 ::selection { background: color-mix(in srgb, var(--color-accent) 40%, transparent); }
 
-@utility glass { @apply rounded-2xl border border-line bg-white/[0.035] backdrop-blur-xl; }
-@utility glass-hover { @apply transition duration-200 hover:border-line-2 hover:bg-white/[0.055]; }
+@utility glass { @apply rounded-2xl border border-line backdrop-blur-xl; background: var(--card); box-shadow: var(--card-shadow); }
+@utility glass-hover { @apply transition duration-200 hover:border-line-2; &:hover { background: var(--card-hover); } }
 @utility btn { @apply inline-flex h-11 shrink-0 select-none whitespace-nowrap items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold transition duration-150 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50; }
-@utility btn-primary { @apply btn bg-accent text-white shadow-[0_8px_30px_-10px_var(--color-accent)] hover:bg-accent-2; }
+@utility btn-primary { @apply btn bg-gradient-to-r from-accent to-accent-2 text-pure shadow-[0_8px_30px_-10px_var(--color-accent)] hover:brightness-110; }
 @utility btn-ghost { @apply btn border border-line-2 bg-white/[0.03] text-white hover:bg-white/[0.08]; }
 @utility btn-quiet { @apply btn text-soft hover:bg-white/[0.06] hover:text-white; }
 @utility btn-danger { @apply btn border border-bad/30 bg-bad/10 text-bad hover:bg-bad/20; }
 @utility btn-sm { @apply h-9 rounded-lg px-3.5 text-[13px]; }
-@utility input { @apply h-12 w-full rounded-xl border border-line bg-white/[0.04] px-4 text-[15px] text-white outline-none transition placeholder:text-mute/70 focus:border-accent/60 focus:bg-white/[0.06] focus:ring-4 focus:ring-accent/10; }
+@utility input { @apply h-12 w-full rounded-xl border border-line-2 bg-white/[0.04] px-4 text-[15px] text-white outline-none transition placeholder:text-mute/70 focus:border-accent/60 focus:bg-white/[0.06] focus:ring-4 focus:ring-accent/10; }
 @utility label { @apply mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-mute; }
 @utility eyebrow { @apply text-[11px] font-semibold uppercase tracking-[0.22em] text-accent; }
 @utility h-display { @apply font-serif font-normal tracking-tight; }
 @utility chip { @apply inline-flex items-center gap-1 rounded-full border border-line bg-white/[0.04] px-2.5 py-1 text-xs text-soft; }
-@utility skeleton { @apply animate-shimmer rounded-xl bg-[linear-gradient(90deg,rgba(255,255,255,0.03)_0%,rgba(255,255,255,0.08)_50%,rgba(255,255,255,0.03)_100%)] bg-[length:800px_100%]; }
+@utility skeleton { @apply animate-shimmer rounded-xl bg-[linear-gradient(90deg,var(--line)_0%,var(--line-2)_50%,var(--line)_100%)] bg-[length:800px_100%]; }
 textarea.input { @apply h-auto min-h-28 py-3 leading-relaxed; }
 select.input { @apply appearance-none; }
 @utility no-scrollbar { scrollbar-width: none; &::-webkit-scrollbar { display: none; } }
 
 .grain::before {
-  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.5;
-  background: radial-gradient(900px 500px at 85% -10%, rgb(255 90 54 / 0.10), transparent 60%),
-              radial-gradient(700px 400px at -10% 110%, rgb(232 196 138 / 0.05), transparent 60%);
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 1;
+  background: radial-gradient(900px 500px at 85% -10%, var(--glow-1), transparent 60%),
+              radial-gradient(700px 400px at -10% 110%, var(--glow-2), transparent 60%);
 }
 .pb-safe { padding-bottom: env(safe-area-inset-bottom); }

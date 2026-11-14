@@ -54,21 +54,21 @@ export function BottlePost({ post, userId, isAdmin, canInteract, onDeleted }: {
       <div className="relative h-full w-full md:aspect-[9/16] md:w-auto md:max-w-full md:overflow-hidden md:rounded-3xl md:border md:border-line">
         <VerticalVideo src={post.video_url} poster={post.poster_url} className="size-full" />
         {/* Overlay: author + caption */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent p-4 pb-5 pr-20 pt-24 md:pr-4">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 text-pure bg-gradient-to-t from-black/85 via-black/30 to-transparent p-4 pb-5 pr-20 pt-24 md:pr-4">
           <div className="pointer-events-auto flex flex-wrap items-center gap-1.5">
             {post.pinned && <span className="chip border-gold/30 bg-black/40 text-gold"><Pin className="size-3" /> Pinned</span>}
             {post.featured && <span className="chip border-gold/30 bg-black/40 text-gold"><Star className="size-3 fill-current" /> Featured</span>}
-            {post.challenge && <Link href={`/challenges/${post.challenge.id}`} className="chip border-accent/40 bg-accent/20 text-white"><Trophy className="size-3" /> {post.challenge.title}</Link>}
+            {post.challenge && <Link href={`/challenges/${post.challenge.id}`} className="chip border-accent/40 bg-accent/20 text-pure"><Trophy className="size-3" /> {post.challenge.title}</Link>}
           </div>
           <Link href={`/u/${post.user_id}`} className="pointer-events-auto mt-2 flex w-fit items-center gap-2.5">
             <Avatar name={post.author?.full_name ?? "?"} src={post.author?.avatar_url} size={36} />
-            <span><span className="block text-sm font-semibold">{post.author?.full_name}</span><span className="block text-[11px] text-white/60">{timeAgo(post.created_at)}</span></span>
+            <span><span className="block text-sm font-semibold">{post.author?.full_name}</span><span className="block text-[11px] text-pure/60">{timeAgo(post.created_at)}</span></span>
           </Link>
           {post.caption && <p className="pointer-events-auto mt-2.5 line-clamp-3 text-sm leading-snug">{post.caption}</p>}
-          {!!post.tags.length && <p className="pointer-events-auto mt-1.5 flex flex-wrap gap-x-2 text-[13px] font-semibold text-white/85">{post.tags.map((t) => <Link key={t} href={`/battles?tag=${encodeURIComponent(t)}`}>#{t}</Link>)}</p>}
+          {!!post.tags.length && <p className="pointer-events-auto mt-1.5 flex flex-wrap gap-x-2 text-[13px] font-semibold text-pure/85">{post.tags.map((t) => <Link key={t} href={`/battles?tag=${encodeURIComponent(t)}`}>#{t}</Link>)}</p>}
         </div>
         {/* Mobile action rail */}
-        <div className="absolute bottom-24 right-3 flex flex-col gap-4 md:hidden">
+        <div className="absolute bottom-24 right-3 flex flex-col gap-4 text-pure md:hidden">
           <Action onClick={like} active={liked} label={likes} icon={<Heart key={pop} className={cn("size-6", liked && "animate-pop fill-accent text-accent")} />} />
           <Action onClick={() => setOpenComments(true)} label={comments} icon={<MessageCircle className="size-6" />} />
           <Action onClick={share} label="Share" icon={<Share2 className="size-5" />} />

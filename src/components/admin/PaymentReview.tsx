@@ -36,7 +36,7 @@ export function PaymentCard({ p }: { p: AdminPayment }) {
           // eslint-disable-next-line @next/next/no-img-element
           ? <img src={p.receipt_url} alt="Receipt" className="size-full object-cover" />
           : <span className="grid size-full place-items-center text-xs text-mute">No receipt image</span>}
-        {p.receipt_url && <span className="absolute inset-0 grid place-items-center bg-black/50 opacity-0 transition group-hover:opacity-100"><ZoomIn className="size-6" /></span>}
+        {p.receipt_url && <span className="absolute inset-0 grid place-items-center text-pure bg-black/50 opacity-0 transition group-hover:opacity-100"><ZoomIn className="size-6" /></span>}
       </button>
       <div className="min-w-0">
         <div className="flex flex-wrap items-start justify-between gap-2">

@@ -51,7 +51,7 @@ export function NotificationBell({ userId, align = "right" }: { userId: string; 
         className="relative grid size-10 place-items-center rounded-xl text-soft transition hover:bg-white/[0.06] hover:text-white">
         <Bell className="size-5" strokeWidth={1.8} />
         {unread > 0 && (
-          <span className="absolute right-1 top-1 grid min-w-[18px] animate-pop place-items-center rounded-full bg-accent px-1 text-[10px] font-bold leading-[18px] text-white ring-2 ring-ink">
+          <span className="absolute right-1 top-1 grid min-w-[18px] animate-pop place-items-center rounded-full bg-accent px-1 text-[10px] font-bold leading-[18px] text-pure ring-2 ring-ink">
             {unread > 9 ? "9+" : unread}
           </span>
         )}

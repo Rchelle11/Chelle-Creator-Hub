@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Search, Shield } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { NotificationBell } from "./NotificationBell";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 export function TopBar({ userId, isAdmin }: { userId: string; isAdmin: boolean }) {
   return (
@@ -12,7 +13,7 @@ export function TopBar({ userId, isAdmin }: { userId: string; isAdmin: boolean }
           <Search className="size-[18px]" /> <span className="hidden md:inline">Search lessons, creators, posts…</span>
         </Link>
         {isAdmin && <Link href="/admin" className="grid size-10 place-items-center rounded-xl text-accent hover:bg-white/[0.06] md:hidden" aria-label="Admin"><Shield className="size-5" /></Link>}
-        <div className="md:ml-auto"><NotificationBell userId={userId} /></div>
+        <div className="flex items-center md:ml-auto"><ThemeToggle /><NotificationBell userId={userId} /></div>
       </div>
     </header>
   );

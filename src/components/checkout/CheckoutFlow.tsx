@@ -87,7 +87,7 @@ export function CheckoutFlow({ course, userId, defaultName }: {
 
           <div className="mt-6 grid items-center gap-6 md:grid-cols-[200px_1fr]">
             {method !== "paypal" ? (
-              <div className="mx-auto grid aspect-square w-48 place-items-center overflow-hidden rounded-2xl bg-white p-3 md:w-full">
+              <div className="mx-auto grid aspect-square w-48 place-items-center overflow-hidden rounded-2xl bg-pure p-3 md:w-full">
                 {PAY[method].qr
                   // eslint-disable-next-line @next/next/no-img-element
                   ? <img src={PAY[method].qr} alt={`${method} QR code`} className="size-full object-contain" />
@@ -154,7 +154,7 @@ export function CheckoutFlow({ course, userId, defaultName }: {
               <div className="relative w-fit">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={preview} alt="Receipt preview" className="max-h-72 rounded-xl border border-line" />
-                <button type="button" onClick={() => { setFile(null); setPreview(null); }} className="absolute right-2 top-2 grid size-8 place-items-center rounded-full bg-black/70" aria-label="Remove"><X className="size-4" /></button>
+                <button type="button" onClick={() => { setFile(null); setPreview(null); }} className="absolute right-2 top-2 grid size-8 place-items-center rounded-full text-pure bg-black/70" aria-label="Remove"><X className="size-4" /></button>
               </div>
             ) : (
               <button type="button" onClick={() => inputRef.current?.click()}

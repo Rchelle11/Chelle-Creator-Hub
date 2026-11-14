@@ -25,7 +25,7 @@ export default async function MessagesPage() {
             return (
               <div key={m.id} className={cn("flex gap-2.5", mine && "flex-row-reverse")}>
                 {!mine && <Avatar name={m.sender?.full_name ?? "?"} src={m.sender?.avatar_url} size={32} />}
-                <div className={cn("max-w-[80%] rounded-2xl px-4 py-2.5 text-sm", mine ? "rounded-br-md bg-accent text-white" : "rounded-bl-md bg-white/[0.06]")}>
+                <div className={cn("max-w-[80%] rounded-2xl px-4 py-2.5 text-sm", mine ? "rounded-br-md bg-accent text-pure" : "rounded-bl-md bg-white/[0.06]")}>
                   <p className="whitespace-pre-wrap">{m.content}</p>
                   <p className={cn("mt-1 text-[10px]", mine ? "text-white/70" : "text-mute")}>{timeAgo(m.created_at)}</p>
                 </div>
