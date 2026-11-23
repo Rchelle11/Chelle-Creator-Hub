@@ -11,7 +11,7 @@ export async function loadCourse(supabase: SupabaseClient, slug: string, userId:
   const { data: course } = await supabase.from("courses").select("*").eq("slug", slug).maybeSingle<Course>();
   if (!course) return null;
 
-  const [{ data: modules }, { data: lessons }, enrollmentRes, progressRes] = await Promise.all([
+  const [{ data: modules }, { data: lessons }, enrollmentRes, progressRes, adminRes] = await Promise.all([
     supabase.from("modules").select("*").eq("course_id", course.id).order("position"),
     supabase.from("lessons").select("*").eq("course_id", course.id).eq("published", true).order("position"),
     userId
@@ -20,10 +20,13 @@ export async function loadCourse(supabase: SupabaseClient, slug: string, userId:
     userId
       ? supabase.from("lesson_progress").select("lesson_id, completed").eq("course_id", course.id).eq("user_id", userId)
       : Promise.resolve({ data: [] as { lesson_id: string; completed: boolean }[] }),
+    userId ? supabase.rpc("is_admin") : Promise.resolve({ data: false }),
   ]);
 
   const enrollment = (enrollmentRes.data ?? null) as Enrollment | null;
   const enrolled = !!enrollment && enrollment.status !== "suspended";
+  // Admins can open every published lesson to review the course, without enrolling.
+  const adminView = !enrolled && adminRes.data === true;
   const done = new Set((progressRes.data ?? []).filter((p) => p.completed).map((p) => p.lesson_id));
 
   let index = 0;
@@ -35,7 +38,9 @@ export async function loadCourse(supabase: SupabaseClient, slug: string, userId:
       lessons: ls.map((l, li) => {
         index += 1;
         const completed = done.has(l.id);
-        const state: LessonState = !enrolled
+        const state: LessonState = adminView
+          ? completed ? "completed" : "available"
+          : !enrolled
           ? l.is_preview ? "available" : "locked"
           : completed ? "completed" : previousDone ? "available" : "locked";
         previousDone = previousDone && completed;
@@ -53,7 +58,7 @@ export async function loadCourse(supabase: SupabaseClient, slug: string, userId:
     null;
 
   return {
-    course, outline, flat, enrollment, enrolled,
+    course, outline, flat, enrollment, enrolled, adminView,
     completedCount, total: flat.length,
     percent: flat.length ? Math.floor((completedCount * 100) / flat.length) : 0,
     nextLesson,
